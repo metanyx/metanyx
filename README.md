@@ -17,9 +17,9 @@ I use Linux and found the following stepd to work:
 - Plug the mini USB cable into the Beagle and then into your host system.  
 Once powered up you should see a new network interface.
 - Configure the new network interface with an ip, such as:
-    ~~ifconfig eth1 192.168.7.1~~
+    `ifconfig eth1 192.168.7.1`
 - You should now be able to ssh to the Beagle:
-    ~~ssh root@192.168.7.2~~
+    `ssh root@192.168.7.2`
 
 #### Run the provided ansible playbook
 _coming soon_
