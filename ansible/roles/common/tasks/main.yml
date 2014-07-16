@@ -1,0 +1,42 @@
+- name: Ensure apt dependencies are installed
+  apt:
+    pkg: "{{ item }}"
+    state: latest
+  with_items:
+    - python-apt
+    - apt-transport-https
+
+# Update repository cache
+- name: Update cache
+  apt: update_cache=yes
+
+# System tools
+- name: Ensure NTP installed and latest
+  apt: pkg=ntp state=latest
+- name: Ensure lsof installed and latest version
+  apt: pkg=lsof state=latest
+- name: ensure htop is at the latest version
+  apt: pkg=htop state=latest
+- name: ensure screen is the latest version
+  apt: pkg=screen state=latest
+- name: ensure tmux is the latest version
+  apt: pkg=tmux state=latest
+- name: Ensure vim installed and latest
+  apt: pkg=vim state=latest
+- name: ensure cryptsetup is the latest version
+  apt: pkg=cryptsetup state=latest
+- name: ensure gnupg-agent is the latest version
+  apt: pkg=gnupg-agent state=latest
+
+- name: Ensure iptables installed and latest version
+  apt: pkg=iptables state=latest
+- name: Ensure iptables-persistent installed and latest version
+  apt: pkg=iptables-persistent state=latest
+
+# Set up iptables rules and service
+- name: Install iptables.sh
+  template: src=iptables.j2 dest=/root/iptables.sh owner=root group=root mode=0700
+- name: Execute iptables.sh
+  command: /root/iptables.sh
+- name: Start iptables-persistent
+  service: name=iptables-persistent enabled=yes state=restarted

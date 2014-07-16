@@ -1,0 +1,132 @@
+#!/bin/sh 
+################################# <insert hostname here> Firewall ######################################
+
+SERVER_IP="{{ default_ipv4_address }}"
+
+INTERFACE="{{ iface }}"
+
+# Specify allowed DNS servers
+DNS_SERVERS="{{ dns_servers }}"
+
+# SSH listening port
+SSH_PORT="{{ ssh_port }}"
+
+# BAN these hosts (space seperated)
+BAN_IPS=""
+
+IPTABLES="/sbin/iptables"
+MODPROBE="/sbin/modprobe"
+IPTABLESV=`$IPTABLES -V`
+echo "[+] Using $IPTABLESV ($IPTABLES)"
+#######################################################################################
+
+echo "[+] Network kernel settings"
+### IP stack
+echo 0 > /proc/sys/net/ipv4/ip_forward
+echo 0 > /proc/sys/net/ipv4/conf/all/accept_redirects
+echo 1 > /proc/sys/net/ipv4/conf/all/log_martians
+echo 0 > /proc/sys/net/ipv4/conf/all/bootp_relay
+### icmp
+echo 0 > /proc/sys/net/ipv4/icmp_echo_ignore_all
+echo 1 > /proc/sys/net/ipv4/icmp_echo_ignore_broadcasts
+echo 1 > /proc/sys/net/ipv4/icmp_ignore_bogus_error_responses
+
+### flush existing rules and set chain policy setting to DROP
+echo "[+] Flushing existing iptables rules..."
+$IPTABLES -F
+$IPTABLES -F -t nat
+$IPTABLES -X
+$IPTABLES -P INPUT DROP
+$IPTABLES -P OUTPUT DROP
+$IPTABLES -P FORWARD ACCEPT
+
+### Drop invalid packets
+$IPTABLES -A INPUT -m conntrack --ctstate INVALID -j DROP
+$IPTABLES -A FORWARD -m conntrack --ctstate INVALID -j DROP
+$IPTABLES -A OUTPUT -m conntrack --ctstate INVALID -j DROP
+
+################################## INPUT chain ########################################
+echo "[+] Setting up INPUT chain..."
+
+### drop ban list first
+for ATTACKER in $BAN_IPS
+do
+ $IPTABLES -A INPUT -s $ATTACKER -j DROP
+done
+
+### state tracking rules in
+$IPTABLES -A INPUT -m state --state RELATED,ESTABLISHED -j ACCEPT
+
+### pings incoming
+$IPTABLES -A INPUT -p icmp --icmp-type echo-request -j ACCEPT
+
+# SYN Check
+$IPTABLES -A INPUT -p tcp ! --syn -m state --state NEW -j DROP
+
+# Drop NULL TCP packets
+$IPTABLES -A INPUT -p tcp --tcp-flags ALL NONE -j DROP
+
+# Accept loopback
+$IPTABLES -A INPUT -i lo -j ACCEPT 
+
+### SSH throttle
+$IPTABLES -A INPUT -i $INTERFACE -p tcp -d $SERVER_IP --dport $SSH_PORT -m state --state NEW -m recent --set --name SSH -j ACCEPT
+$IPTABLES -A INPUT -i $INTERFACE -p tcp --dport $SSH_PORT -m recent --update --seconds 60 --hitcount 6 --rttl --name SSH -j ULOG --ulog-prefix "BAD SSH bruteforce "
+$IPTABLES -A INPUT -i $INTERFACE -p tcp --dport $SSH_PORT -m recent --update --seconds 60 --hitcount 6 --rttl --name SSH -j DROP
+
+### Default Log + Drop
+# debug level logs get written to /var/log/debug
+# rsyslog moves strings in debug with "unsolicited" to /var/log/iptables
+$IPTABLES -A INPUT -d $SERVER_IP -m limit --limit 4/s --limit-burst 8 -j ULOG --ulog-prefix "unsolicited "
+$IPTABLES -A INPUT -d $SERVER_IP -j DROP
+# just to be sure:
+$IPTABLES -A INPUT -j DROP
+
+
+##################################### OUTPUT chain ######################################
+echo "[+] Setting up OUTPUT chain..."
+
+### state tracking rules out
+$IPTABLES -A OUTPUT -m state --state ESTABLISHED,RELATED -j ACCEPT
+
+# localhost / 127.0.0.1
+$IPTABLES -A OUTPUT -o lo -j ACCEPT
+
+### DNS out
+for dnsip in $DNS_SERVERS
+do
+ $IPTABLES -A OUTPUT -p udp -s $SERVER_IP --sport 1024:65535 -d $dnsip --dport 53 -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT
+ $IPTABLES -A OUTPUT -p tcp -s $SERVER_IP --sport 1024:65535 -d $dnsip --dport 53 -m state --state NEW,RELATED,ESTABLISHED -j ACCEPT
+done
+
+### SMTP
+$IPTABLES -A OUTPUT -p tcp --dport 25 --syn -m state --state NEW -j ACCEPT
+
+### Root Only
+$IPTABLES -A OUTPUT -p tcp --dport 22 --syn -m state --state NEW --match owner --uid-owner root -j ACCEPT  # ssh
+$IPTABLES -A OUTPUT -p tcp --dport 21 --syn -m state --state NEW --match owner --uid-owner root -j ACCEPT  # ftp
+$IPTABLES -A OUTPUT -p tcp --dport 80 --syn -m state --state NEW --match owner --uid-owner root -j ACCEPT  # http
+$IPTABLES -A OUTPUT -p tcp --dport 443 --syn -m state --state NEW --match owner --uid-owner root -j ACCEPT  # https
+$IPTABLES -A OUTPUT -p tcp --sport 993 -m state --state NEW,ESTABLISHED,RELATED --match owner --uid-owner root -j ACCEPT # git
+
+### Outgoing traffic for ALL user accounts
+$IPTABLES -A OUTPUT -p icmp -j ACCEPT  # icmp traffic
+$IPTABLES -A OUTPUT -p tcp --dport 43 --syn -m state --state NEW -j ACCEPT    # whois
+$IPTABLES -A OUTPUT -p tcp --dport 4321 --syn -m state --state NEW -j ACCEPT  # whois
+$IPTABLES -A OUTPUT -p udp --dport 123 -j ACCEPT                              # ntp
+$IPTABLES -A OUTPUT -p tcp --dport 123 -j ACCEPT                              # ntp
+$IPTABLES -A OUTPUT -p tcp --dport 9418 --syn -m state --state NEW -j ACCEPT  # git
+$IPTABLES -A OUTPUT -p tcp --dport 2401 --syn -m state --state NEW -j ACCEPT  # cvs
+$IPTABLES -A OUTPUT -p tcp --dport 11371 --syn -m state --state NEW -j ACCEPT # OpenPGP HTTP Keyserver
+$IPTABLES -A OUTPUT -p tcp --dport 5432 --syn -m state --state NEW -j ACCEPT  # postgresql
+
+### Log + Drop all other
+$IPTABLES -A OUTPUT -j ULOG --ulog-prefix "BAD OUTGOING "
+$IPTABLES -A OUTPUT -j DROP
+
+################################################################################################
+
+iptables-save > /etc/iptables/rules.v4
+
+exit
+### EOF ###
