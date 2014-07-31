@@ -1,3 +1,14 @@
+---
+
+# Set up networking
+- name: Install networking interfaces config
+  template: src=interfaces.j2 dest=/etc/network/interfaces owner=root group=root mode=0600
+  notify: Reload networking
+
+- name: Install the MVPS hosts file to blackhole advertisers and stink sites
+  copy: src=mvps_hosts.txt dest=/etc/mvps_hosts owner=root group=root mode=0644
+
+# Packages required/useful for ansible use of apt
 - name: Ensure apt dependencies are installed
   apt:
     pkg: "{{ item }}"
@@ -7,36 +18,46 @@
     - apt-transport-https
 
 # Update repository cache
-- name: Update cache
+- name: Update apt cache
   apt: update_cache=yes
 
 # System tools
-- name: Ensure NTP installed and latest
-  apt: pkg=ntp state=latest
-- name: Ensure lsof installed and latest version
-  apt: pkg=lsof state=latest
-- name: ensure htop is at the latest version
-  apt: pkg=htop state=latest
-- name: ensure screen is the latest version
-  apt: pkg=screen state=latest
-- name: ensure tmux is the latest version
-  apt: pkg=tmux state=latest
-- name: Ensure vim installed and latest
-  apt: pkg=vim state=latest
-- name: ensure cryptsetup is the latest version
-  apt: pkg=cryptsetup state=latest
-- name: ensure gnupg-agent is the latest version
-  apt: pkg=gnupg-agent state=latest
+- name: Install useful system tools
+  apt:
+    pkg: "{{ item }}"
+    state: latest
+  with_items:
+    - vim
+    - lsof
+    - htop
+    - tmux
 
-- name: Ensure iptables installed and latest version
-  apt: pkg=iptables state=latest
-- name: Ensure iptables-persistent installed and latest version
-  apt: pkg=iptables-persistent state=latest
+# Security tools
+- name: Install security related applications
+  apt:
+    pkg: "{{ item }}"
+    state: latest
+  with_items:
+    - cryptsetup
+    - iptables
+    - iptables-persistent
+    - macchanger
+
+# Set up DHCP on eth0
+- name: Install dnsmasq for dhcp on client-side interfaces
+  apt: pkg=dnsmasq state=latest
+- name: Set up configuration script for dnsmasq
+  template: src=dnsmasq.j2 dest=/etc/dnsmasq.conf owner=root group=root mode=0644
+  notify: Reload dnsmasq
+
+# Install tor
+- name: Install TOR
+  apt: pkg=tor state=latest
 
 # Set up iptables rules and service
-- name: Install iptables.sh
+- name: Install iptables rules
   template: src=iptables.j2 dest=/root/iptables.sh owner=root group=root mode=0700
-- name: Execute iptables.sh
-  command: /root/iptables.sh
+  notify: Load iptables rules
+
 - name: Start iptables-persistent
-  service: name=iptables-persistent enabled=yes state=restarted
+  service: name=iptables-persistent enabled=yes

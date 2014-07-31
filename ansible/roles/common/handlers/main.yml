@@ -1,0 +1,10 @@
+---
+
+- name: Load iptables rules
+  command: /bin/bash /root/iptables.sh
+
+- name: Reload networking
+  service: name=networking enabled=yes state=reloaded
+
+- name: Reload dnsmasq
+  service: name=dnsmasq enabled=yes state=reloaded

@@ -1,0 +1,5 @@
+external_interface: wlan0
+wpa_ssid: lytea
+wpa_psk: 9bfe72266c76f4ad0e86bb5d20344daf193454c6c3f9045ccd28e8a42751e57e
+dns_servers: '8.8.8.8 172.16.0.1'
+
