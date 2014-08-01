@@ -22,10 +22,10 @@ Once powered up you should see a new network interface.
     `ssh root@192.168.7.2`
 
 #### Run the provided ansible playbook
-[Instructions](tree/master/ansible)
+[Instructions](https://github.com/auraltension/TOR-Bone/tree/master/ansible)
 
 Known Issues
 ------------
 Presently it seems that using a USB WiFi device draws too much current to run the BeagleBone directly via USB power.  However I'm yet to experiment extensively.
 
-Otherwise, see [issues](issues)
+Otherwise, see [issues](https://github.com/auraltension/TOR-Bone/issues)
