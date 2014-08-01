@@ -53,6 +53,9 @@
 # Install tor
 - name: Install TOR
   apt: pkg=tor state=latest
+- name: Set up torrc configuration file
+  template: src=torrc.j2 dest=/etc/tor/torrc.conf owner=root group=root mode=0644
+  notify: Restart tor
 
 # Set up iptables rules and service
 - name: Install iptables rules

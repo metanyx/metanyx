@@ -22,7 +22,7 @@ echo "[+] Using $IPTABLESV ($IPTABLES)"
 
 echo "[+] Network kernel settings"
 ### IP stack
-echo 0 > /proc/sys/net/ipv4/ip_forward
+echo 1 > /proc/sys/net/ipv4/ip_forward
 echo 0 > /proc/sys/net/ipv4/conf/all/accept_redirects
 echo 1 > /proc/sys/net/ipv4/conf/all/log_martians
 echo 0 > /proc/sys/net/ipv4/conf/all/bootp_relay
@@ -44,6 +44,10 @@ $IPTABLES -P FORWARD DROP
 $IPTABLES -A INPUT -m conntrack --ctstate INVALID -j DROP
 $IPTABLES -A FORWARD -m conntrack --ctstate INVALID -j DROP
 $IPTABLES -A OUTPUT -m conntrack --ctstate INVALID -j DROP
+
+################################## PREROUTING ########################################
+$IPTABLES -t nat -A PREROUTING -i eth0 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -j REDIRECT --to-ports 9040
+$IPTABLES -t nat -A PREROUTING -i eth0 -p udp -m udp --dport 53 -j REDIRECT --to-ports 9053
 
 ################################## INPUT chain ########################################
 echo "[+] Setting up INPUT chain..."

@@ -1,0 +1,62 @@
+### THIS FILE IS CONTROLLED BY ANSIBLE ###
+### BEST NOT TO EDIT DIRECTLY          ###
+
+## Lines that begin with "## " try to explain what's going on. Lines
+## that begin with just "#" are disabled commands: you can enable them
+## by removing the "#" symbol.
+##
+## See 'man tor', or https://www.torproject.org/docs/tor-manual.html,
+## for more options you can use in this file.
+##
+## Tor will look for this file in various places based on your platform:
+## https://www.torproject.org/docs/faq#torrc
+
+## Tor opens a socks proxy on port 9050 by default -- even if you don't
+## configure one below. Set "SocksPort 0" if you plan to run Tor only
+## as a relay, and not make any local application connections yourself.
+#SocksPort 9050 # Default: Bind to localhost:9050 for local connections.
+SocksPort 127.0.0.1:9050 # Bind to this adddress:port too.
+SocksPort 192.168.5.1:9050 # Bind to this adddress:port too.
+
+## Logs go to stdout at level "notice" unless redirected by something
+## else, like one of the below lines. You can have as many Log lines as
+## you want.
+##
+## We advise using "notice" in most cases, since anything more verbose
+## may provide sensitive information to an attacker who obtains the logs.
+##
+## Send all messages of level 'notice' or higher to /var/log/tor/notices.log
+#Log notice file /var/log/tor/notices.log
+## Send every possible message to /var/log/tor/debug.log
+#Log debug file /var/log/tor/debug.log
+## To send all messages to stderr:
+#Log debug stderr
+## Use the system log instead of Tor's logfiles
+Log notice syslog
+
+## The directory for keeping all the keys/etc.
+DataDirectory /var/lib/tor
+
+## When providing proxy server service to a network of computers, 
+## change the IPv4 network to "10.192.0.0/10" or "172.16.0.0/12"
+VirtualAddrNetworkIPv4 10.192.0.0/10             
+
+## When this option is enabled, and we get a request to resolve an 
+## address that ends with one of the suffixes in AutomapHostsSuffixes,
+## we map an unused virtual address to that address, and return the 
+## new virtual address. This is handy for making ".onion" addresses work
+## with applications that resolve an address and then connect to it.
+AutomapHostsOnResolve 1                                              
+
+## Open this port to listen for transparent proxy connections.
+TransPort 192.168.5.1:9040                                                          
+
+## Open this port to listen for UDP DNS requests, and resolve
+## them anonymously. This port only handles A, AAAA, and PTR 
+## requests---it doesn’t handle arbitrary DNS request types
+DNSPort 192.168.5.1:9053                                                              
+
+## Allow no-name routers (ones that the dirserver operators don't
+## know anything about) in only these positions in your circuits.
+## Other choices (not advised) are entry,exit,introduction.
+AllowUnverifiedNodes middle,rendezvous #is this actually still used?

@@ -8,3 +8,6 @@
 
 - name: Reload dnsmasq
   service: name=dnsmasq enabled=yes state=reloaded
+
+- name: Restart tor
+  service: name=tor enabled=yes state=restarted
