@@ -1,5 +1,3 @@
-coming soon...
-
 Running Ansible to provision the TOR-Bone
 -----------------------------------------
 ```
