@@ -26,6 +26,10 @@ dns_servers:
   - <dns_server_2>
 __CONF__
 ```
+You'll want to edit those variables, which I'd do with a command like:
+```
+vi group_vars/torproxy
+```
 
 #### Finally, run the playbook
 ```

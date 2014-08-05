@@ -32,15 +32,13 @@ Just pull the power from the BeagleBone Black.
 
 Once you've done this, plug the ethernet cable into your computer, and a wireless USB dongle into the BBB's 
 USB port.  If you're feeling generous you could use an ethernet switch and share the darkness with your friends 
-or neighbours.  You'll want to ensure any other connections to yoru computer are disabled, such as your local WiFi.
+or neighbours.  You'll want to ensure any other connections to your computer are disabled, such as your local WiFi.
 
 Then you can go ahead and plug it back in, it'll take about a minute to boot and give you an IP address.
 
-#### Check you're properly configured
+#### Check that you're properly configured
 Visit https://check.torproject.org/ to confirm that you are now surfing via TOR. Cowabunga!
 
 Known Issues
 ------------
-Presently it seems that using a USB WiFi device draws too much current to run the BeagleBone directly via USB power.  However I'm yet to experiment extensively.
-
-Otherwise, see [issues](https://github.com/auraltension/TOR-Bone/issues)
+See [issues](https://github.com/auraltension/TOR-Bone/issues)
