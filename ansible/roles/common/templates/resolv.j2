@@ -1,0 +1,6 @@
+### THIS FILE IS CONTROLLED BY ANSIBLE ###
+### BEST NOT TO EDIT DIRECTLY          ###
+
+{% for item in dns_servers %}
+nameserver {{ item }}
+{% endfor %}

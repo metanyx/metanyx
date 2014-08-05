@@ -17,8 +17,8 @@ iface eth0 inet static
     network 192.168.5.0
 
 # WiFi
-auto wlan0
-iface wlan0 inet dhcp
+auto {{ external_interface }}
+iface {{ external_interface }} inet dhcp
     wpa-ssid "{{ wpa_ssid }}"
     wpa-psk "{{ wpa_psk }}"
 

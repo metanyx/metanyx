@@ -9,7 +9,7 @@ EXT_INTERFACE="{{ external_interface }}"
 INT_INTERFACES="eth0 usb0"
 
 # Specify allowed DNS servers
-DNS_SERVERS="{{ dns_servers }}"
+DNS_SERVERS="{{ dns_servers | join(" ") }}"
 
 # BAN these hosts (space seperated)
 BAN_IPS=""

@@ -21,7 +21,9 @@ cat > group_vars/torproxy << __CONF__
 external_interface: wlan0
 wpa_ssid: <your-ssid>
 wpa_psk: <your_psk>
-dns_servers: '127.0.0.1 <any_other_dns_server>
+dns_servers: 
+  - <dns_server_1>
+  - <dns_server_2>
 __CONF__
 ```
 

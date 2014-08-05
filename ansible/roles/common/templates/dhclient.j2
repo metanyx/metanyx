@@ -1,0 +1,16 @@
+### THIS FILE IS CONTROLLED BY ANSIBLE ###
+### BEST NOT TO EDIT DIRECTLY          ###
+
+# Configuration file for /sbin/dhclient, which is included in Debian's
+#       dhcp3-client package.
+
+
+option rfc3442-classless-static-routes code 121 = array of unsigned integer 8;
+send host-name = gethostname();
+supersede domain-name-servers {{ dns_servers | join(" ") }};
+request subnet-mask, broadcast-address, time-offset, routers,
+        domain-name, domain-name-servers, domain-search, host-name,
+        dhcp6.name-servers, dhcp6.domain-search,
+        netbios-name-servers, netbios-scope, interface-mtu,
+        rfc3442-classless-static-routes, ntp-servers;
+

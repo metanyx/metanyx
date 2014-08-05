@@ -8,6 +8,12 @@
 - name: Install the MVPS hosts file to blackhole advertisers and stink sites
   copy: src=mvps_hosts.txt dest=/etc/mvps_hosts owner=root group=root mode=0644
 
+- name: Set up DHCP client config
+  template: src=dhclient.j2 dest=/etc/dhcp/dhclient.conf owner=root group=root mode=0644
+
+- name: Set up resolv.conf for DNS resolution
+  template: src=resolv.j2 dest=/etc/resolv.conf owner=root group=root mode=0644
+
 # Packages required/useful for ansible use of apt
 - name: Ensure apt dependencies are installed
   apt:
