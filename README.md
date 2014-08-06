@@ -11,7 +11,7 @@ How-to
 _This presumes a fresh Beagle Bone Black rev C, which comes with Debian pre-installed._
 
 
-In the begining, I went ahead and removed the serial number sticker from the bone.
+In the beginning, I went ahead and removed the serial number sticker from the bone.
 
 #### Set up networking and SSH to the Beagle Bone
 
