@@ -1,7 +1,9 @@
 TOR-Bone
 ========
 
-A Transparent TOR proxy built on a Beagle Bone Black.  
+The perfect gift for Fathers Day.
+
+also: A Transparent TOR proxy built on a Beagle Bone Black.  
 
 Presently this works, many of the times, but it's not without it's issues which I'm slowly ironing out.
 
