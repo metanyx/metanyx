@@ -3,7 +3,9 @@
 # Set up networking
 - name: Install networking interfaces config
   template: src=interfaces.j2 dest=/etc/network/interfaces owner=root group=root mode=0600
-  notify: Reload networking
+  notify: 
+    - Restart networking
+    - ifup ext_interface
 
 - name: Install the MVPS hosts file to blackhole advertisers and stink sites
   copy: src=mvps_hosts.txt dest=/etc/mvps_hosts owner=root group=root mode=0644

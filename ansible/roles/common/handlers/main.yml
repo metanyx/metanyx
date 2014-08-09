@@ -3,8 +3,11 @@
 - name: Load iptables rules
   command: /bin/bash /root/iptables.sh
 
-- name: Reload networking
-  service: name=networking enabled=yes state=reloaded
+- name: Restart networking
+  service: name=networking enabled=yes state=restarted
+
+- name: ifup ext_interface
+  command: ifup {{ ext_interface }}
 
 - name: Reload dnsmasq
   service: name=dnsmasq enabled=yes state=reloaded
