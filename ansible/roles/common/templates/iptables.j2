@@ -3,7 +3,7 @@
 ### THIS FILE CONTROLLED BY ANSIBLE ###
 ### BEST NOT TO EDIT DIRECTLY       ###
 
-################################# "{{ ansible_hostname }}" Firewall ######################################
+############################## "{{ ansible_hostname }}" Firewall ###################################
 
 EXT_INTERFACE="{{ external_interface }}"
 INT_INTERFACES="eth0 usb0"
@@ -18,7 +18,7 @@ IPTABLES="/sbin/iptables"
 MODPROBE="/sbin/modprobe"
 IPTABLESV=`$IPTABLES -V`
 echo "[+] Using $IPTABLESV ($IPTABLES)"
-#######################################################################################
+#################################################################################
 
 echo "[+] Network kernel settings"
 ### IP stack
@@ -45,11 +45,11 @@ $IPTABLES -A INPUT -m conntrack --ctstate INVALID -j DROP
 $IPTABLES -A FORWARD -m conntrack --ctstate INVALID -j DROP
 $IPTABLES -A OUTPUT -m conntrack --ctstate INVALID -j DROP
 
-################################## PREROUTING ########################################
-$IPTABLES -t nat -A PREROUTING -i eth0 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -j REDIRECT --to-ports 9040
+############################### PREROUTING #####################################
+$IPTABLES -t nat -A PREROUTING -i eth0 ! -d 192.168.5.1 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -j REDIRECT --to-ports 9040
 $IPTABLES -t nat -A PREROUTING -i eth0 -p udp -m udp --dport 53 -j REDIRECT --to-ports 9053
 
-################################## INPUT chain ########################################
+############################### INPUT chain #####################################
 echo "[+] Setting up INPUT chain..."
 
 ### drop ban list first
@@ -82,7 +82,7 @@ $IPTABLES -A INPUT -i $EXT_INTERFACE -m limit --limit 4/s --limit-burst 8 -j DRO
 $IPTABLES -A INPUT -j DROP
 
 
-##################################### OUTPUT chain ######################################
+################################## OUTPUT chain ###################################
 echo "[+] Setting up OUTPUT chain..."
 
 ### state tracking rules out
@@ -94,7 +94,7 @@ $IPTABLES -A OUTPUT -o lo -j ACCEPT
 ### Log + Drop all other (actually for now we're allowing all)
 $IPTABLES -A OUTPUT -j ACCEPT
 
-################################################################################################
+####################################################################################
 
 iptables-save > /etc/iptables/rules.v4
 
