@@ -1,5 +1,9 @@
 ---
 
+# Create space for project scripts in /opt
+- name: Create /opt/torbone
+  file: path=/opt/torbone state=directory owner=root group=root mode=0700
+
 # Set up networking
 - name: Install networking interfaces config
   template: src=interfaces.j2 dest=/etc/network/interfaces owner=root group=root mode=0600
