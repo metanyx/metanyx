@@ -40,15 +40,15 @@ Once powered up you should see a new network interface.
 
 - Configure the new network interface with an ip, such as
 
-    ifconfig eth1 192.168.7.1
+    `ifconfig eth1 192.168.7.1`
 
 - You should now be able to ssh to the BeagleBone
 
-    ssh root@192.168.7.2
+    `ssh root@192.168.7.2`
 
 - Expand the filesystem to take up the remaining empty space on your SD card
 
-    bash /opt/scripts/tools/grow_partition.sh 
+    `bash /opt/scripts/tools/grow_partition.sh`
 
 - Reboot
 
@@ -71,6 +71,8 @@ Compatable Hardware
 -------------------
 The following wireless devices are considered stable when used as part of the TOR-Bone
 * Alfa AWUS036NH USB WiFi
+
+There is also a list of [officially tested BeaglebOne Black WiFi devices](http://elinux.org/Beagleboard:BeagleBoneBlack#WIFI_Adapters), any of which I would presume to work if listed to work with Debian..
 
 Known Issues
 ------------
