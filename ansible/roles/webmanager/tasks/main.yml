@@ -1,0 +1,9 @@
+---
+
+# Set up the management interface
+- name: Create manager directory in /opt/torbone
+  file: path=/opt/torbone/manager state=directory owner=root group=root mode=0700
+
+- name: Install bottle.py
+  copy: src=bottle.py dest=/opt/torbone/manager/ owner=root group=root mode=0600
+
