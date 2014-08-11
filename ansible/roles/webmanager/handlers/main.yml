@@ -1,0 +1,4 @@
+---
+
+- name: Restart webmanager
+  service: name=torbone-manager.service enabled=yes state=restarted

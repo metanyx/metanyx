@@ -52,6 +52,19 @@
     - iptables-persistent
     - macchanger
 
+# Disable packaged BeagleBone web services
+- name: Disable default BeagleBone web services
+  service:
+    name: "{{ item }}"
+    state: stopped
+    enabled: no
+  with_items:
+    - apache2
+    - cloud9.service
+    - bonescript.service
+    - bonescript-autorun.service
+    - bonescript.socket
+
 # Set up DHCP on eth0
 - name: Install dnsmasq for dhcp on client-side interfaces
   apt: pkg=dnsmasq state=latest

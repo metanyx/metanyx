@@ -7,3 +7,9 @@
 - name: Install bottle.py
   copy: src=bottle.py dest=/opt/torbone/manager/ owner=root group=root mode=0600
 
+- name: install systemd script for manager
+  copy: src=torbone-manager.service dest=/etc/systemd/system/torbone-manager.service owner=root group=root mode=0600
+
+- name: Install manage.py
+  copy: src=manage.py dest=/opt/torbone/manager/ owner=root group=root mode=0700
+  notify: Restart webmanager
