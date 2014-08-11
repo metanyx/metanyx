@@ -1,0 +1,8 @@
+[Unit]
+Description=TORbone manager
+
+[Service]
+ExecStart=/opt/torbone/manager/manage.py
+
+[Install]
+WantedBy=multi-user.target
