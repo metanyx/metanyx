@@ -81,5 +81,5 @@ See [issues](https://github.com/auraltension/TOR-Bone/issues)
 Contact
 -------
 email: auraltension@riseup.net (PGP key can be found in /doc)
-twitter: @auraltensn
 
+twitter: [@auraltensn](https://twitter.com/auraltensn)
