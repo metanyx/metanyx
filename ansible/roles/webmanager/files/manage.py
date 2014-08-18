@@ -25,7 +25,7 @@ def set_wifi(ssid, psk):
 @get('/setup') # or @route('/setup')
 def setup():
     return '''
-        <p>TORbone Setup</p>
+        <p>metanyx Setup</p>
         <form action="/setup" method="post">
             SSID: <input name="ssid" type="text" /><br>
             WPA PSK: <input name="psk" type="password" /><br>

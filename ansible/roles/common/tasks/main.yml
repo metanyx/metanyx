@@ -1,15 +1,22 @@
 ---
 
 # Create space for project scripts in /opt
-- name: Create /opt/torbone
-  file: path=/opt/torbone state=directory owner=root group=root mode=0700
+- name: Create /opt/metanyx
+  file: path=/opt/metanyx state=directory owner=root group=root mode=0700
 
 # Set up networking
 - name: Install networking interfaces config
-  template: src=interfaces.j2 dest=/etc/network/interfaces owner=root group=root mode=0600
+  template: 
+    src: interfaces.j2 
+    dest: /etc/network/interfaces
+    owner: root
+    group: root
+    mode: 0600
   notify: 
+    - ifdown ext_interface
     - Restart networking
     - ifup ext_interface
+    - ifup int_interface
 
 - name: Install the MVPS hosts file to blackhole advertisers and stink sites
   copy: src=mvps_hosts.txt dest=/etc/mvps_hosts owner=root group=root mode=0644
@@ -32,6 +39,22 @@
 # Update repository cache
 - name: Update apt cache
   apt: update_cache=yes
+
+# Remove unused packages
+- name: Remove unwanted applications
+  apt:
+    pkg: "{{ item }}"
+    state: absent
+    purge: yes
+  with_items:
+    - lightdm
+    - apache2.2-bin
+    - apache2-utilsA
+    - wicd-daemon
+    - wicd-cli
+    - wicd-curses
+    - wicd-gtk
+    - python-wicd
 
 # System tools
 - name: Install useful system tools
@@ -56,18 +79,33 @@
     - iptables-persistent
     - macchanger
 
+# Turn off X
+- name: Disable graphical environment
+  service:
+    name: multi-user.target
+    state: started
+    enabled: yes
+
+# Disable packaged BeagleBone web services
+#- name: Disable default BeagleBone web services
+#  service:
+#    name: "{{ item }}"
+#    state: stopped
+#    enabled: no
+#  with_items:
+#    - cloud9.service
+#    - bonescript-autorun.service
+#    - bonescript.socket
+#    - bonescript.service
+
 # Disable packaged BeagleBone web services
 - name: Disable default BeagleBone web services
-  service:
-    name: "{{ item }}"
-    state: stopped
-    enabled: no
+  command: systemctl disable "{{ item }}"
   with_items:
-    - apache2
-    - cloud9.service
     - bonescript.service
-    - bonescript-autorun.service
     - bonescript.socket
+    - bonescript-autorun.service
+    - cloud9.service
 
 # Set up DHCP on eth0
 - name: Install dnsmasq for dhcp on client-side interfaces
@@ -81,7 +119,7 @@
   apt: pkg=tor state=latest
 - name: Set up torrc configuration file
   template: src=torrc.j2 dest=/etc/tor/torrc owner=root group=root mode=0644
-  notify: Restart tor
+#  notify: Restart tor
 
 # Set up iptables rules and service
 - name: Install iptables rules

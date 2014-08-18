@@ -1,4 +1,4 @@
-TOR-Bone
+metanyx
 ========
 
 The perfect gift for Fathers Day.
@@ -53,9 +53,9 @@ Once powered up you should see a new network interface.
 - Reboot
 
 #### Run the provided ansible playbook
-[Instructions](https://github.com/auraltension/TOR-Bone/tree/master/ansible)
+[Instructions](https://github.com/auraltension/metanyx/tree/master/ansible)
 
-#### Reboot your new TOR-Bone
+#### Reboot your new metanyx
 Just pull the power from the BeagleBone Black.
 
 Once you've done this, plug the ethernet cable into your computer, and a wireless USB dongle into the BBB's 
@@ -69,14 +69,14 @@ Visit https://check.torproject.org/ to confirm that you are now surfing via TOR.
 
 Compatable Hardware
 -------------------
-The following wireless devices are considered stable when used as part of the TOR-Bone
+The following wireless devices are considered stable when used as part of the metanyx
 * Alfa AWUS036NH USB WiFi
 
 There is also a list of [officially tested BeaglebOne Black WiFi devices](http://elinux.org/Beagleboard:BeagleBoneBlack#WIFI_Adapters), any of which I would presume to work if listed to work with Debian..
 
 Known Issues
 ------------
-See [issues](https://github.com/auraltension/TOR-Bone/issues)
+See [issues](https://github.com/auraltension/metanyx/issues)
 
 Contact
 -------

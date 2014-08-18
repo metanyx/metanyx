@@ -33,5 +33,5 @@ vi group_vars/torproxy
 
 #### Finally, run the playbook
 ```
-ansible-playbook site.yml -i torbone
+ansible-playbook playbook.yml -i metanyx
 ```

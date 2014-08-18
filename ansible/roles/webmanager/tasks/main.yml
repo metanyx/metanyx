@@ -1,15 +1,19 @@
 ---
 
 # Set up the management interface
-- name: Create manager directory in /opt/torbone
-  file: path=/opt/torbone/manager state=directory owner=root group=root mode=0700
+- name: Create manager directory in /opt/metanyx
+  file: path=/opt/metanyx/manager state=directory owner=root group=root mode=0700
 
 - name: Install bottle.py
-  copy: src=bottle.py dest=/opt/torbone/manager/ owner=root group=root mode=0600
+  copy: src=bottle.py dest=/opt/metanyx/manager/ owner=root group=root mode=0600
 
 - name: install systemd script for manager
-  copy: src=torbone-manager.service dest=/etc/systemd/system/torbone-manager.service owner=root group=root mode=0600
+  copy: src=metanyx-manager.service dest=/etc/systemd/system/metanyx-manager.service owner=root group=root mode=0600
 
 - name: Install manage.py
-  copy: src=manage.py dest=/opt/torbone/manager/ owner=root group=root mode=0700
+  copy: src=manage.py dest=/opt/metanyx/manager/ owner=root group=root mode=0700
+
+- name: Start metanyx-manager.service
+  command: systemctl enable metanyx-manager.service
   notify: Restart webmanager
+

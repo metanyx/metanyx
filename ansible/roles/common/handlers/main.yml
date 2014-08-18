@@ -6,8 +6,14 @@
 - name: Restart networking
   service: name=networking enabled=yes state=restarted
 
+- name: ifdown ext_interface
+  command: ifdown {{ external_interface }}
+
 - name: ifup ext_interface
   command: ifup {{ external_interface }}
+
+- name: ifup int_interface
+  command: ifup eth0
 
 - name: Reload dnsmasq
   service: name=dnsmasq enabled=yes state=reloaded
