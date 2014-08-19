@@ -100,12 +100,13 @@
 
 # Disable packaged BeagleBone web services
 - name: Disable default BeagleBone web services
-  command: systemctl disable "{{ item }}"
+  command: systemctl disable --ignore-dependencies -f "{{ item }}"
   with_items:
+    - cloud9.service
+    - cloud9.socket
     - bonescript.service
     - bonescript.socket
     - bonescript-autorun.service
-    - cloud9.service
 
 # Set up DHCP on eth0
 - name: Install dnsmasq for dhcp on client-side interfaces
