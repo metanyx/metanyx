@@ -5,8 +5,6 @@ The perfect gift for Fathers Day.
 
 also: A Transparent TOR proxy built on a Beagle Bone Black.  
 
-Presently this works, many of the times, but it's not without it's issues which I'm slowly ironing out.
-
 How-to
 ------
 
@@ -60,7 +58,8 @@ Just pull the power from the BeagleBone Black.
 
 Once you've done this, plug the ethernet cable into your computer, and a wireless USB dongle into the BBB's 
 USB port.  If you're feeling generous you could use an ethernet switch and share the darkness with your friends 
-or neighbours.  You'll want to ensure any other connections to your computer are disabled, such as your local WiFi.
+or neighbours ( although youll  want to set a root password).  Ensure any other connections to your computer 
+are disabled, such as your local WiFi.
 
 Then you can go ahead and plug it back in, it'll take about a minute to boot and give you an IP address.
 
