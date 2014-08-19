@@ -108,6 +108,15 @@
     - bonescript.socket
     - bonescript-autorun.service
 
+- name: Remove default Beaglebone web services
+  command: 'rm -f /lib/systemd/system/"{{ item }}"'
+  with_items:
+    - cloud9.service
+    - cloud9.socket
+    - bonescript.service
+    - bonescript.socket
+    - bonescript-autorun.service
+
 # Set up DHCP on eth0
 - name: Install dnsmasq for dhcp on client-side interfaces
   apt: pkg=dnsmasq state=latest
