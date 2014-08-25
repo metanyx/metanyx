@@ -10,7 +10,7 @@ How-to
 
 In the beginning, I went ahead and removed the serial number sticker from the bone.
 
-You could just grab a disk image from https://revoltingworld.net/metanyx,
+You could just grab a disk image from https://metanyx.net,
 
 or,
 
