@@ -3,16 +3,18 @@ metanyx
 
 The perfect gift for Fathers Day.
 
-also: A Transparent TOR proxy built on a Beagle Bone Black.  
+also: A Transparent TOR proxy in a little box.
+
 
 How-to
 ------
 
+You could just grab a disk image for the BeagleBone Black from https://metanyx.net,
+
+*development has now moved from the BeagleBone Black to the Olimex OLinuXino A10 Lime*
+*see the branch 'olimex'*
+
 In the beginning, I went ahead and removed the serial number sticker from the bone.
-
-You could just grab a disk image from https://metanyx.net,
-
-or,
 
 #### Flash an SD card with a Debian image
 
