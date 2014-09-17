@@ -13,17 +13,23 @@ You can grab an image file to use in a BeagleBone Black at https://metanyx.net
 
 Otherwise continue on to set up the system utilising ansible.
 
+
 How-to
 ------
 
-
 *Development has now switched to using the [Olimex A10-OLinuXino-Lime](https://www.olimex.com/Products/OLinuXino/A10/A10-OLinuXino-LIME/open-source-hardware) board.*
 
+### Set Up Hardware
 
-### BeagleBone Black
+#### Olimex
+
+lorem ipsum
+
+#### BeagleBone Black
+
 In the beginning, I went ahead and removed the serial number sticker from the bone.
 
-#### Flash an SD card with a Debian image
+ **Flash an SD card with a Debian image**
 
 The latest image can be downloaded from http://beagleboard.org/latest-images
 
@@ -38,7 +44,7 @@ You can flash the image to the BBB from a linux system using dd
 
 Once burned, slot that sucker into the bone.
 
-#### Set up networking and SSH to the Beagle Bone
+ **Set up networking and SSH to the Beagle Bone**
 
 There are good guides to this already online, such as the BeagleBoard [getting started guide](http://beagleboard.org/Getting+Started)
 
@@ -67,11 +73,11 @@ Once powered up you should see a new network interface.
 [Instructions](https://github.com/auraltension/metanyx/tree/master/ansible)
 
 #### Reboot your new metanyx
-Just pull the power from the BeagleBone Black.
+Just pull the power from the unit.
 
-Once you've done this, plug the ethernet cable into your computer, and a wireless USB dongle into the BBB's 
+Once you've done this, plug the ethernet cable into your computer, and a wireless USB dongle into the units 
 USB port.  If you're feeling generous you could use an ethernet switch and share the darkness with your friends 
-or neighbours ( although youll  want to set a root password).  Ensure any other connections to your computer 
+or neighbours ( although you'll  want to set a root password).  Ensure any other connections to your computer 
 are disabled, such as your local WiFi.
 
 Then you can go ahead and plug it back in, it'll take about a minute to boot and give you an IP address.
@@ -83,8 +89,9 @@ Compatable Hardware
 -------------------
 The following wireless devices are considered stable when used as part of the metanyx
 * Alfa AWUS036NH USB WiFi
+* Edimax EW-7811Un
 
-There is also a list of [officially tested BeaglebOne Black WiFi devices](http://elinux.org/Beagleboard:BeagleBoneBlack#WIFI_Adapters), any of which I would presume to work if listed to work with Debian..
+There is also a list of [officially tested BeaglebOne Black WiFi devices](http://elinux.org/Beagleboard:BeagleBoneBlack#WIFI_Adapters), any of which I would presume to work if listed to work with Debian.
 
 Known Issues
 ------------
