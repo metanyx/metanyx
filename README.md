@@ -14,6 +14,7 @@ How-to
 You could just grab a disk image for the BeagleBone Black from https://metanyx.net,
 
 *development has now moved from the BeagleBone Black to the Olimex OLinuXino A10 Lime*
+
 *see the branch 'olimex'*
 
 In the beginning, I went ahead and removed the serial number sticker from the bone.
