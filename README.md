@@ -5,6 +5,8 @@ The perfect gift for Fathers Day.
 
 also: A Transparent TOR proxy in a little box.
 
+*please, don't trust this with your life, metanyx is still in it's infancy*
+
 
 How-to
 ------
