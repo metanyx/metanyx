@@ -31,6 +31,15 @@ You'll want to edit those variables, which I'd do with a command like:
 vi group_vars/torproxy
 ```
 
+#### Edit the IP address of the board you are flashing.
+
+```
+vi metanyx 
+```
+
+This shouldn't need changing for a Beagle Bone Black with direct connection to your computer.
+If you're running something which has DHCP'd to your local network you'll need to update the IP
+
 #### Finally, run the playbook
 ```
 ansible-playbook playbook.yml -i metanyx
