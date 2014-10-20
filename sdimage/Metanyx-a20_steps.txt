@@ -1,0 +1,200 @@
+### Well shit, I lost all my notes - I'm pretty sure these were my steps to 
+
+# Set up the toolchain
+http://linux-sunxi.org/Toolchain#Debian
+
+# add the following to /etc/apt/sources.list:
+deb http://www.emdebian.org/debian/ unstable main
+
+$ sudo apt-get install emdebian-archive-keyring
+
+$ sudo apt-get update
+
+I had to install libmpc from source before I could complete the followng apt install
+$ sudo  apt-get install gcc-4.7-arm-linux-gnueabihf ncurses-dev build-essential git debootstrap u-boot-tools
+
+$ mkdir ~/bin
+$ cd ~/bin
+$ for i in /usr/bin/arm-linux-gnueabihf*-4.7 ; do j=${i##/usr/bin/}; ln -s $i ${j%%-4.7} ; done
+
+### Uboot
+
+$ git clone -b sunxi https://github.com/linux-sunxi/u-boot-sunxi.git
+
+$ cd u-boot-sunxi/
+
+$ make A20-OLinuXino_Lime_config ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf-
+
+$ make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf-
+
+$ ls u-boot.bin u-boot-sunxi-with-spl.bin spl/sunxi-spl.bin
+
+spl/sunxi-spl.bin  u-boot.bin  u-boot-sunxi-with-spl.bin
+
+$ cd ..
+
+### Kernel
+
+$ git clone https://github.com/linux-sunxi/linux-sunxi
+
+$ cp ~/development/public/metanyx/sdimage/a20-lime\ files/spi-sun7i.c drivers/spi/
+
+$ cp ~/development/public/metanyx/sdimage/a20-lime\ files/SPI.patch ./
+
+$ patch -p0 < SPI.patch
+
+$ cp ~/development/public/metanyx/sdimage/a20_defconfig arch/arm/configs/
+
+$ make ARCH=arm a20_olimex_defconfig
+
+# Not necessary - you can alter kernel options tho
+# $ make ARCH=arm menuconfig
+
+$ make -j4 ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- uImage
+<snip>
+Image Name:   Linux-3.4.103+
+Created:      Sun Oct 19 16:37:25 2014
+Image Type:   ARM Linux Kernel Image (uncompressed)
+Data Size:    4583904 Bytes = 4476.47 kB = 4.37 MB
+Load Address: 40008000
+Entry Point:  40008000
+  Image arch/arm/boot/uImage is ready
+
+$ make -j4 ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- INSTALL_MOD_PATH=out modules
+
+$ make -j4 ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- INSTALL_MOD_PATH=out modules_install
+
+cd ..
+
+### Format SD Card
+
+$ sudo fdisk /dev/sdc
+
+4.1. p
+will list your partitions
+
+if there are already partitions on your card do:
+
+d enter 1
+if you have more than one partitition press d while delete them all
+
+create the first partition, starting from 2048
+n enter p enter 1 enter enter +16M
+
+create second partition
+n enter p enter 2 enter enter enter
+
+then list the created partitions:
+p enter
+if you did everything correctly on 4GB card you should see something like:
+
+Disk /dev/sdg: 3980 MB, 3980394496 bytes
+123 heads, 62 sectors/track, 1019 cylinders, total 7774208 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk identifier: 0x00000000
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdg1            2048       34815       16384   83  Linux
+/dev/sdg2           34816     7774207     3869696   83  Linux
+
+
+press w
+
+the first partition should be vfat as this is FS which the Allwinner bootloader understands
+
+$ sudo mkfs.vfat /dev/sdc1
+the second should be normal Linux EXT3 FS
+
+$ sudo mkfs.ext3 /dev/sdc2
+
+### Write the Uboot and u-boot-sunxi-with-spl.bin
+
+$ sudo dd if=u-boot-sunxi/u-boot-sunxi-with-spl.bin of=/dev/sdc bs=1024 seek=8
+
+### Write kernel uImage you build to the SD-card
+
+$ sudo mount /dev/sdc1 /mnt/
+
+$ sudo cp linux-sunxi/arch/arm/boot/uImage /mnt/
+
+### Write script.bin file
+
+$ sudo cp ~/development/public/metanyx/sdimage/a20-lime\ files/script_a20_lime/script_a20_lime_3.4.90_rel_2/script.bin /mnt/
+
+$ sync
+
+$ sudo umount /mnt/
+
+### Debian rootfs
+
+I downloaded rootfs from https://drive.google.com/file/d/0B-bAEPML8fwlSW9wQUhWbDE3T3c/edit?usp=sharing
+
+Will build my own later
+
+$ sudo mount /dev/sdc2 /mnt/
+
+$ sudo tar xvfz ~/metanyx/a10_lime_debian_3_4_90_rel_3.tgz -C /mnt/
+
+$ ls -al /mnt/
+total 116
+drwxr-xr-x 23 root   root    4096 Oct 19 19:52 .
+drwxr-xr-x 22 root   root    4096 Oct  5 04:22 ..
+-rw-r--r--  1 root   root     101 Dec 19  2013 a
+drwxr-xr-x  2 root   root    4096 Dec 19  2013 bin
+drwxr-xr-x  2 root   root    4096 Dec 15  2012 boot
+drwxr-xr-x  2 root   root    4096 Jan  1  2010 Desktop
+drwxr-xr-x  3 root   root    4096 Mar 26  2013 dev
+drwxr-xr-x 84 engage engage  4096 Jun 13 17:58 etc
+drwxr-xr-x  3 root   root    4096 Dec 19  2013 home
+-rw-r--r--  1 root   root      13 Jun 10 18:43 leds-sunxi
+-rw-r--r--  1 root   root      13 Jun 10 18:44 ledtrig-heartbeat
+drwxr-xr-x 13 engage engage  4096 Jun 10 17:01 lib
+drwx------  2 root   root   16384 Mar 26  2013 lost+found
+drwxr-xr-x  3 root   root    4096 Jun 13 17:58 media
+drwxr-xr-x  6 root   root    4096 Dec 11  2013 mnt
+drwxr-xr-x  6 root   root    4096 Jun 13 18:06 opt
+drwxr-xr-x  2 root   root    4096 Dec 15  2012 proc
+drwx------ 16 root   root    4096 Jun 13 17:24 root
+drwxr-xr-x  9 root   root    4096 Mar 26  2013 run
+drwxr-xr-x  2 root   root    4096 Dec 19  2013 sbin
+drwxr-xr-x  2 root   root    4096 Jun 10  2012 selinux
+drwxr-xr-x  2 root   root    4096 Mar 26  2013 srv
+drwxr-xr-x  2 root   root    4096 Feb  8  2013 sys
+drwxrwxrwt  2 root   root    4096 Jun 13 17:58 tmp
+drwxr-xr-x 11 root   root    4096 Nov 19  2013 usr
+drwxr-xr-x 11 root   root    4096 Mar 26  2013 var
+
+$ sudo rm -rf /mnt/lib/modules/*
+
+$ sudo cp -rfv linux-sunxi/out/lib/modules/3.4.103+/ /mnt/lib/modules/
+
+$ sudo rm -rf /mnt/lib/firmware/
+
+$ sudo cp -rfv linux-sunxi/out/lib/firmware/ /mnt/lib/
+
+$ sync
+
+$ sudo umount /mnt/
+
+
+### After this, eject, plug into LIME board, connect UART and boot.
+I had to manually make sunxi_emac load at boot to get ethernet
+
+# echo "sunxi_emac" >> /etc/modules
+
+default username/password is : root / olimex
+
+I removed the lines in /etc/udev/rules.d/70-persistent-net.rules
+
+# reboot
+
+# apt-get install systemd(how do i get this to work?)
+
+
+CONFIG_HAVE_AOUT
+CONFIG_MTD
+CONFIG_SUNXI_EMAC
+CONFIG_ATH9K_RATE_CONTROL
+CONFIG_RTL8192CU
