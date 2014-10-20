@@ -79,13 +79,6 @@
     - iptables-persistent
     - macchanger
 
-# Turn off X
-- name: Disable graphical environment
-  service:
-    name: multi-user.target
-    state: started
-    enabled: yes
-
 # Disable packaged BeagleBone web services
 #- name: Disable default BeagleBone web services
 #  service:
@@ -99,23 +92,23 @@
 #    - bonescript.service
 
 # Disable packaged BeagleBone web services
-- name: Disable default BeagleBone web services
-  command: systemctl disable --ignore-dependencies -f "{{ item }}"
-  with_items:
-    - cloud9.service
-    - cloud9.socket
-    - bonescript.service
-    - bonescript.socket
-    - bonescript-autorun.service
+#- name: Disable default BeagleBone web services
+#  command: systemctl disable --ignore-dependencies -f "{{ item }}"
+#  with_items:
+#    - cloud9.service
+#    - cloud9.socket
+#    - bonescript.service
+#    - bonescript.socket
+#    - bonescript-autorun.service
 
-- name: Remove default Beaglebone web services
-  command: 'rm -f /lib/systemd/system/"{{ item }}"'
-  with_items:
-    - cloud9.service
-    - cloud9.socket
-    - bonescript.service
-    - bonescript.socket
-    - bonescript-autorun.service
+#- name: Remove default Beaglebone web services
+#  command: 'rm -f /lib/systemd/system/"{{ item }}"'
+#  with_items:
+#    - cloud9.service
+#    - cloud9.socket
+#    - bonescript.service
+#    - bonescript.socket
+#    - bonescript-autorun.service
 
 # Set up DHCP on eth0
 - name: Install dnsmasq for dhcp on client-side interfaces
