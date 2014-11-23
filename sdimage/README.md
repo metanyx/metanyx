@@ -156,6 +156,7 @@ then list the created partitions:
 *p enter*
 if you did everything correctly on 4GB card you should see something like:
 
+```
 Disk /dev/sdg: 3980 MB, 3980394496 bytes
 123 heads, 62 sectors/track, 1019 cylinders, total 7774208 sectors
 Units = sectors of 1 * 512 = 512 bytes
@@ -166,6 +167,7 @@ Disk identifier: 0x00000000
    Device Boot      Start         End      Blocks   Id  System
 /dev/sdg1            2048       34815       16384   83  Linux
 /dev/sdg2           34816     7774207     3869696   83  Linux
+```
 
 *press w*
 
