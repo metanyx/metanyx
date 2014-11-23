@@ -117,6 +117,8 @@ Make uImage
     make -j4 ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- uImage
 
 It will output like:
+
+```
 <snip>
 Image Name:   Linux-3.4.103+
 Created:      Sun Oct 19 16:37:25 2014
@@ -125,6 +127,7 @@ Data Size:    4583904 Bytes = 4476.47 kB = 4.37 MB
 Load Address: 40008000
 Entry Point:  40008000
   Image arch/arm/boot/uImage is ready
+```
 
 ```
 make -j4 ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- INSTALL_MOD_PATH=out modules
@@ -136,8 +139,7 @@ cd ..
 
     sudo fdisk /dev/sdX
 
-4.1. p
-will list your partitions
+*p will list your partitions*
 
 if there are already partitions on your card do:
 
