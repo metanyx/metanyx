@@ -1,3 +1,3 @@
 [torproxy]
-metanyx  ansible_ssh_host=192.168.7.2 ansible_ssh_user=root
+metanyx  ansible_ssh_host=192.168.5.1 ansible_ssh_user=root
 

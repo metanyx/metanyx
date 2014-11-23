@@ -2,6 +2,6 @@
 
 - name: Restart webmanager
   service: 
-    name: metanyx-manager.service
+    name: metanyx-manager
     enabled: yes
     state: restarted

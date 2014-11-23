@@ -18,11 +18,12 @@ iface eth0 inet static
 
 # WiFi
 auto {{ external_interface }}
+allow-hotplug wlan0
 iface {{ external_interface }} inet dhcp
     wpa-ssid "{{ wpa_ssid }}"
     wpa-psk "{{ wpa_psk }}"
 
-# Ethernet/RNDIS gadget (g_ether)
+# BeagleBone Black Ethernet/RNDIS gadget (g_ether)
 # ... or on host side, usbnet and random hwaddr
 # Note on some boards, usb0 is automaticly setup with an init script
 iface usb0 inet static

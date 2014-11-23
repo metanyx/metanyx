@@ -1,0 +1,43 @@
+---
+
+# Remove unused packages
+- name: Remove unwanted applications
+  apt:
+    pkg: "{{ item }}"
+    state: absent
+    purge: yes
+  with_items:
+    - lightdm
+    - apache2.2-bin
+    - apache2-utilsA
+    - wicd-daemon
+    - wicd-cli
+    - wicd-curses
+    - wicd-gtk
+    - python-wicd
+
+# Turn off X
+- name: Disable graphical environment
+  service:
+    name: multi-user.target
+    state: started
+    enabled: yes
+
+# Disable packaged BeagleBone web services
+- name: Disable default BeagleBone web services
+  command: systemctl disable --ignore-dependencies -f "{{ item }}"
+  with_items:
+    - cloud9.service
+    - cloud9.socket
+    - bonescript.service
+    - bonescript.socket
+    - bonescript-autorun.service
+
+- name: Remove default Beaglebone web services
+  command: 'rm -f /lib/systemd/system/"{{ item }}"'
+  with_items:
+    - cloud9.service
+    - cloud9.socket
+    - bonescript.service
+    - bonescript.socket
+    - bonescript-autorun.service
