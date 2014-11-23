@@ -11,19 +11,19 @@
                                                 
 
                                                 
-Brief notes on building an sd image for the Olimex OLinuXino A2 LIME 
---------------------------------------------------------------------                                               
+Building an SD image for the Olimex OLinuXino A20 LIME 
+------------------------------------------------------                                               
+
 This has been written for a Debian host.
 
 Perform all steps as an unprivileged local user, except where noted
 
 ## Set up the host computer
 
-### Set up the toolchain
+First, set up a working variable to point to where the metanyx repo has been cloned,
+for example:
 
-Refer to http://linux-sunxi.org/Toolchain#Debian 
-
-### Install dependencies
+   REPO=~/dev/metanyx
 
 Add the following to /etc/apt/sources.list:
 
@@ -39,9 +39,12 @@ Update your apt cache
 
 Install dependenies
 
-(I had to install libmpc from source before I could complete the followng apt install)
+*(I had to install libmpc from source before I could complete the followng apt install)*
 
-    sudo apt-get install gcc-4.7-arm-linux-gnueabihf ncurses-dev build-essential git debootstrap u-boot-tools libusb-1.0-0-dev
+```
+sudo apt-get install gcc-4.7-arm-linux-gnueabihf ncurses-dev build-essential git \
+debootstrap u-boot-tools libusb-1.0-0-dev
+```
 
 Link gcc-4.7-arm-linux-gnueabihf binaries.
 
@@ -83,11 +86,13 @@ cd ..
 
 ## script.bin
 
+This step is optinal, I provide script.bin but you can generate your own.
+
 ```
 git clone https://github.com/linux-sunxi/sunxi-tools.git
 cd sunxi-tools/
 make
-./fex2bin ../metanyx/sdimage/src/script.fex ../metanyx/sdimage/src/script.bin
+./fex2bin $REPO/sdimage/src/script.fex $REPO/sdimage/src/script.bin
 cd ..
 ```
 
@@ -96,10 +101,10 @@ cd ..
 ```
 git clone https://github.com/linux-sunxi/linux-sunxi
 cd linux-sunxi
-cp ~/metanyx/sdimage/a20-lime\ files/spi-sun7i.c drivers/spi/
-cp ~/metanyx/sdimage/a20-lime\ files/SPI.patch ./
+cp $REPO/sdimage/a20-lime\ files/spi-sun7i.c drivers/spi/
+cp $REPO/sdimage/a20-lime\ files/SPI.patch ./
 patch -p0 < SPI.patch
-cp ~/metanyx/sdimage/a20_defconfig arch/arm/configs/
+cp $REPO/sdimage/a20_defconfig arch/arm/configs/
 make ARCH=arm a20_olimex_defconfig
 ```
 
@@ -187,7 +192,7 @@ sudo cp linux-sunxi/arch/arm/boot/uImage /mnt/
 ## Write script.bin file
 
 ```
-sudo cp metanyx/sdimage/src/script.bin /mnt/
+sudo cp $REPO/sdimage/src/script.bin /mnt/
 sync
 sudo umount /mnt/
 ```
@@ -223,8 +228,10 @@ default username/password is : root / metanyx  or root / olimex using the olimex
 
 
 
-***********************
-Kernel configs to add in make menuconfig:
+# Some more notes for me to move elsewhere
+
+### Kernel configs to add in make menuconfig:
+
 
 CONFIG_HAVE_AOUT
 CONFIG_MTD
@@ -233,9 +240,9 @@ CONFIG_ATH9K_RATE_CONTROL
 CONFIG_RTL8192CU
 
 
-# Some more notes for me to move elsewhere
 
-###loading wifi firmware:
+### loading wifi firmware:
+
 ```
 git clone http://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git
 cp -a linux-firmware/rtlwifi /lib/firmware/
@@ -278,3 +285,6 @@ cd RTL8188-hostapd/hostapd
 make
 mv hostapd /usr/sbin/hostapd
 ```
+
+## References
+http://linux-sunxi.org/Toolchain#Debian
