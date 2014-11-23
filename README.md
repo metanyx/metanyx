@@ -7,10 +7,6 @@ also: A Transparent TOR proxy in a little box.
 
 *please, don't trust this with your life, metanyx is still in it's infancy*
 
-###Boards presently supported:
-- BeagleBone Black revC
-- Olimex OLinuXino LIME A20
-
 
 Get It
 ------
@@ -22,13 +18,14 @@ Otherwise continue on to set up the system utilising ansible.
 How-to
 ------
 
-*Development has now switched to using the [Olimex A10-OLinuXino-Lime](https://www.olimex.com/Products/OLinuXino/A10/A10-OLinuXino-LIME/open-source-hardware) board.*
+*Development is now focusing on the [Olimex A20-OLinuXino-Lime](https://www.olimex.com/Products/OLinuXino/A10/A10-OLinuXino-LIME/open-source-hardware) board.*
+* I hope to support multiple boards, however the most feature-rich result will be with the Olimex board*
 
 ### Set Up Hardware
 
 #### Olimex
 
-lorem ipsum
+See sdimage/READEME.md
 
 #### BeagleBone Black
 
@@ -75,10 +72,10 @@ Once powered up you should see a new network interface.
 
 - Reboot
 
-#### Run the provided ansible playbook
+### Run the provided ansible playbook
 [Instructions](https://github.com/auraltension/metanyx/tree/master/ansible)
 
-#### Reboot your new metanyx
+### Reboot your new metanyx
 Just pull the power from the unit.
 
 Once you've done this, plug the ethernet cable into your computer, and a wireless USB dongle into the units 
@@ -88,11 +85,18 @@ are disabled, such as your local WiFi.
 
 Then you can go ahead and plug it back in, it'll take about a minute to boot and give you an IP address.
 
-#### Check that you're properly configured
+### Check that you're properly configured
 Visit https://check.torproject.org/ to confirm that you are now surfing via TOR. Cowabunga!
 
 Compatable Hardware
 -------------------
+
+### ARM Boards presently supported:
+- BeagleBone Black revC
+- Olimex OLinuXino LIME A20
+
+### WiFi devices
+
 The following wireless devices are considered stable when used as part of the metanyx
 * Alfa AWUS036NH USB WiFi
 * Edimax EW-7811Un
