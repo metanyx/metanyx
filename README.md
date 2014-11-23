@@ -19,7 +19,7 @@ How-to
 ------
 
 *Development is now focusing on the [Olimex A20-OLinuXino-Lime](https://www.olimex.com/Products/OLinuXino/A10/A10-OLinuXino-LIME/open-source-hardware) board.*
-* I hope to support multiple boards, however the most feature-rich result will be with the Olimex board*
+*I hope to support multiple boards, however the most feature-rich result will be with the Olimex board*
 
 ### Set Up Hardware
 
