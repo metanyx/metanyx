@@ -1,36 +1,278 @@
-1. Setup of the toolchain
--------------------------
+                   _                            
+                  | |                           
+    _ __ ___   ___| |_ __ _ _ __  _   ___  __   
+   | '_ ' _ \ / _ \ __/ _' | '_ \| | | \ \/ /   
+   | | | | | |  __/ || (_| | | | | |_| |>  <    
+   |_| |_| |_|\___|\__\__'_|_| |_|\__' /_/\_\   
+                                   __/ |        
+                                  |___/         
+                                                
 
-You should make sure you have the tools for building the Linux Kernel and install them if you don’t have them. To install new software you should be with super user rights on your Linux machine, so do this type in a terminal.
+                                                
+Brief notes on building an sd image for the Olimex OLinuXino A2 LIME 
+--------------------------------------------------------------------                                               
+This has been written for a Debian host.
 
-    sudo su -
+Perform all steps as an unprivileged local user, except where noted
 
-you will be asked for your password and then your prompt will change to # which means you are now the super user, all future commands should be run in this mode.
+## Set up the host computer
 
-First update apt-get links by typing
+### Set up the toolchain
 
-    apt-get update
+Refer to http://linux-sunxi.org/Toolchain#Debian 
 
-Install the toolchain by typing the following.
+### Install dependencies
 
-    apt-get install gcc-4.7-arm-linux-gnueabihf ncurses-dev uboot-mkimage build-essential git
+Add the following to /etc/apt/sources.list:
 
-This will install: GCC compiler used to compile the kernal, The kernel config menu
-uboot make image which is required to allow the SD card to book into the linux image, Git which allows you to download from the github which holds source code for some of the system, Some other tools for building the kernel.
+    deb http://www.emdebian.org/debian/ unstable main
 
-Note that if you use debian may be you will need to add
+Install the embian keyring
 
-deb http://www.emdebian.org/debian squeeze main
+    sudo apt-get install emdebian-archive-keyring
 
-in the file below:
+Update your apt cache
 
-/etc/apt/sources.list
+    sudo apt-get update
 
-after the installation you now have all tools to make your very own metanyx image!
+Install dependenies
+
+(I had to install libmpc from source before I could complete the followng apt install)
+
+    sudo apt-get install gcc-4.7-arm-linux-gnueabihf ncurses-dev build-essential git debootstrap u-boot-tools libusb-1.0-0-dev
+
+Link gcc-4.7-arm-linux-gnueabihf binaries.
+
+```
+mkdir ~/bin
+cd ~/bin
+for i in /usr/bin/arm-linux-gnueabihf*-4.7 ; do j=${i##/usr/bin/}; ln -s $i ${j%%-4.7} ; done
+```
+
+Create a local directory to work in.
+
+```
+mkdir ~/metanyx-img
+cd ~/metanyx-img
+```
+
+## Uboot
+
+Clone u-boot-sunxi repo
+
+```
+git clone -b sunxi https://github.com/linux-sunxi/u-boot-sunxi.git
+cd u-boot-sunxi/
+```
+Make u-boot
+
+```
+make A20-OLinuXino_Lime_config ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf-
+make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf-
+```
+
+Check that things look right, and go back to your working directory
+
+```
+ls u-boot.bin u-boot-sunxi-with-spl.bin spl/sunxi-spl.bin
+  spl/sunxi-spl.bin  u-boot.bin  u-boot-sunxi-with-spl.bin
+cd ..
+```
+
+## script.bin
+
+```
+git clone https://github.com/linux-sunxi/sunxi-tools.git
+cd sunxi-tools/
+make
+./fex2bin ../metanyx/sdimage/src/script.fex ../metanyx/sdimage/src/script.bin
+cd ..
+```
+
+## Kernel
+
+```
+git clone https://github.com/linux-sunxi/linux-sunxi
+cd linux-sunxi
+cp ~/metanyx/sdimage/a20-lime\ files/spi-sun7i.c drivers/spi/
+cp ~/metanyx/sdimage/a20-lime\ files/SPI.patch ./
+patch -p0 < SPI.patch
+cp ~/metanyx/sdimage/a20_defconfig arch/arm/configs/
+make ARCH=arm a20_olimex_defconfig
+```
+
+Not necessary - you can alter kernel options tho
+
+    make ARCH=arm menuconfig
+
+Make uImage
+
+    make -j4 ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- uImage
+
+It will output like:
+<snip>
+Image Name:   Linux-3.4.103+
+Created:      Sun Oct 19 16:37:25 2014
+Image Type:   ARM Linux Kernel Image (uncompressed)
+Data Size:    4583904 Bytes = 4476.47 kB = 4.37 MB
+Load Address: 40008000
+Entry Point:  40008000
+  Image arch/arm/boot/uImage is ready
+
+```
+make -j4 ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- INSTALL_MOD_PATH=out modules
+make -j4 ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- INSTALL_MOD_PATH=out modules_install
+cd ..
+```
+
+## Format SD Card
+
+    sudo fdisk /dev/sdX
+
+4.1. p
+will list your partitions
+
+if there are already partitions on your card do:
+
+*d enter 1*
+if you have more than one partitition press d while delete them all
+
+create the first partition, starting from 2048
+*n enter p enter 1 enter enter +16M*
+
+create second partition
+*n enter p enter 2 enter enter enter*
+
+then list the created partitions:
+*p enter*
+if you did everything correctly on 4GB card you should see something like:
+
+Disk /dev/sdg: 3980 MB, 3980394496 bytes
+123 heads, 62 sectors/track, 1019 cylinders, total 7774208 sectors
+Units = sectors of 1 * 512 = 512 bytes
+Sector size (logical/physical): 512 bytes / 512 bytes
+I/O size (minimum/optimal): 512 bytes / 512 bytes
+Disk identifier: 0x00000000
+
+   Device Boot      Start         End      Blocks   Id  System
+/dev/sdg1            2048       34815       16384   83  Linux
+/dev/sdg2           34816     7774207     3869696   83  Linux
+
+*press w*
+
+
+Format the partitions
+
+The first partition should be vfat as this is FS which the Allwinner bootloader understands
+
+    sudo mkfs.vfat /dev/sdX1
+
+the second should be normal Linux EXT3 FS
+
+    sudo mkfs.ext3 /dev/sdX2
+
+## Write the Uboot and u-boot-sunxi-with-spl.bin
+
+    sudo dd if=u-boot-sunxi/u-boot-sunxi-with-spl.bin of=/dev/sdc bs=1024 seek=8
+
+## Write kernel uImage you build to the SD-card
+
+```
+sudo mount /dev/sdX1 /mnt/
+sudo cp linux-sunxi/arch/arm/boot/uImage /mnt/
+```
+
+## Write script.bin file
+
+```
+sudo cp metanyx/sdimage/src/script.bin /mnt/
+sync
+sudo umount /mnt/
+```
+
+## Debian rootfs
+
+Refer to http://olimex.wordpress.com/2014/07/21/how-to-create-bare-minimum-debian-wheezy-rootfs-from-scratch/
+
+```
+sudo apt-get install qemu-user-static debootstrap binfmt-support
+mkdir rootfs
+sudo debootstrap --arch=armhf --foreign wheezy rootfs
+sudo cp /usr/bin/qemu-arm-static rootfs/usr/bin/
+sudo cp /etc/resolv.conf rootfs/etc
+
+*** got to here ***
+
+sudo echo "sunxi_emac" >> rootfs/etc/modules
+sudo mount /dev/sdX2 /mnt
+sudo cp -a rootfs/* /mnt/
+sudo rm -rf /mnt/lib/modules/*
+sudo mkdir /mnt/lib/modules/*
+sudo cp -rfv linux-sunxi/out/lib/modules/3.4.103+ /mnt/lib/modules/
+sudo rm -rf /mnt/lib/firmware/
+sudo cp -rfv linux-sunxi/out/lib/firmware/ /mnt/lib/
+sync
+sudo umount /mnt/
+```
+
+## After this, eject, plug into LIME board, connect UART and boot.
+
+default username/password is : root / metanyx  or root / olimex using the olimex rootfs
 
 
 
+***********************
+Kernel configs to add in make menuconfig:
 
-References
-----------
-http://olimex.wordpress.com/2013/12/13/building-debian-linux-image-for-a10-olinuxino-lime-with-kernel-3-4-67/
+CONFIG_HAVE_AOUT
+CONFIG_MTD
+CONFIG_SUNXI_EMAC
+CONFIG_ATH9K_RATE_CONTROL
+CONFIG_RTL8192CU
+
+
+# Some more notes for me to move elsewhere
+
+###loading wifi firmware:
+```
+git clone http://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git
+cp -a linux-firmware/rtlwifi /lib/firmware/
+cp linux-firmware/rt28* /lib/firmware/
+```
+
+
+###Access point:
+
+    sudo apt-get install hostapd
+
+add interface=wlan1 to /etc/dnsmasq.conf
+add to /etc/network/interfaces:
+
+```
+# Access point interface
+auto wlan1
+allow-hotplug wlan1
+iface wlan1 inet static
+    address 192.168.6.2
+    netmask 255.255.255.0
+    network 192.168.6.0
+```
+
+    vi /etc/hostapd/hostapd.conf:
+
+enter stuff...
+
+    vi /etc/default/hostapd
+
+*DAEMON_CONF="/etc/hostapd/hostapd.conf"*
+
+#### For edimax:
+```
+git clone https://github.com/jenssegers/RTL8188-hostapd
+cd RTL8188-hostapd/hostapd
+```
+
+```
+make
+mv hostapd /usr/sbin/hostapd
+```
