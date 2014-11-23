@@ -23,7 +23,7 @@ Perform all steps as an unprivileged local user, except where noted
 First, set up a working variable to point to where the metanyx repo has been cloned,
 for example:
 
-   REPO=~/dev/metanyx
+    REPO=~/dev/metanyx
 
 Add the following to /etc/apt/sources.list:
 
