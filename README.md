@@ -25,7 +25,7 @@ How-to
 
 #### Olimex
 
-See sdimage/READEME.md
+See readme [sdimage](sdimage/README.md)
 
 #### BeagleBone Black
 
