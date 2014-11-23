@@ -42,5 +42,5 @@ If you're running something which has DHCP'd to your local network you'll need t
 
 #### Finally, run the playbook
 ```
-ansible-playbook playbook.yml -i metanyx
+ansible-playbook playbook.yml -i metanyx -k
 ```
