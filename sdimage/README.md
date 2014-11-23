@@ -226,9 +226,9 @@ sync
 sudo umount /mnt/
 ```
 
-## After this, eject, plug into LIME board, connect UART and boot.
+## Eject SD image, insert into LIME board, connect UART and boot
 
-default username/password is : root / metanyx  or root / olimex using the olimex rootfs
+default username/password is : **root / metanyx**
 
 
 
