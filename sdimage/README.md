@@ -14,7 +14,7 @@
 Building an SD image for the Olimex OLinuXino A20 LIME 
 ------------------------------------------------------                                               
 
-This has been written for a Debian host.
+This has been written for a Debian sid host.
 
 Perform all steps as an unprivileged local user, except where noted
 
@@ -39,7 +39,7 @@ Update your apt cache
 
 Install dependenies
 
-*(I had to install libmpc from source before I could complete the followng apt install)*
+*(I had to install libmpc from source before I could complete the following apt install)*
 
 ```
 sudo apt-get install gcc-4.7-arm-linux-gnueabihf ncurses-dev build-essential git \
