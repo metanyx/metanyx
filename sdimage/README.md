@@ -14,7 +14,8 @@
 Building an SD image for the Olimex OLinuXino A20 LIME 
 ------------------------------------------------------                                               
 
-This has been written for a Debian sid host.
+This has been written for a Debian sid host. For other OS's you'd need to set up the 
+Sunxi toolchain, as per http://linux-sunxi.org/Toolchain
 
 Perform all steps as an unprivileged local user, except where noted
 
@@ -25,13 +26,10 @@ for example:
 
     REPO=~/dev/metanyx
 
-Add the following to /etc/apt/sources.list:
+Enable armhf architecture
 
-    deb http://www.emdebian.org/debian/ unstable main
+    sudo dpkg --add-architecture armhf
 
-Install the embian keyring
-
-    sudo apt-get install emdebian-archive-keyring
 
 Update your apt cache
 
@@ -72,21 +70,22 @@ cd u-boot-sunxi/
 Make u-boot
 
 ```
-make A20-OLinuXino_Lime_config ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf-
+make A20-OLinuXino-Lime_config ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf-
 make ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf-
 ```
 
-Check that things look right, and go back to your working directory
+Check that things look right, and then go back to your working directory
 
 ```
 ls u-boot.bin u-boot-sunxi-with-spl.bin spl/sunxi-spl.bin
   spl/sunxi-spl.bin  u-boot.bin  u-boot-sunxi-with-spl.bin
+
 cd ..
 ```
 
 ## script.bin
 
-This step is optinal, I provide script.bin but you can generate your own.
+This step is optional, I provide script.bin but you can generate your own.
 
 ```
 git clone https://github.com/linux-sunxi/sunxi-tools.git
@@ -101,11 +100,11 @@ cd ..
 ```
 git clone https://github.com/linux-sunxi/linux-sunxi
 cd linux-sunxi
-cp $REPO/sdimage/a20-lime\ files/spi-sun7i.c drivers/spi/
-cp $REPO/sdimage/a20-lime\ files/SPI.patch ./
+cp $REPO/sdimage/src/spi-sun7i.c drivers/spi/
+cp $REPO/sdimage/src/SPI.patch ./
 patch -p0 < SPI.patch
-cp $REPO/sdimage/a20_defconfig arch/arm/configs/
-make ARCH=arm a20_olimex_defconfig
+cp $REPO/sdimage/src/kernel.config arch/arm/configs/metanyx_defconfig
+make ARCH=arm metanyx_defconfig
 ```
 
 Not necessary - you can alter kernel options tho
