@@ -31,6 +31,8 @@ def setup():
             WPA PSK: <input name="psk" type="password" /><br>
             <input value="Save" type="submit" />
         </form>
+        <p><a href="shutdown">Shutdown</a></p>
+        <p>To implement next: reboot, new tor ID, change password</p>
     '''
 
 @post('/setup') # or @route('/login', method='POST')
@@ -38,8 +40,13 @@ def do_setup():
     ssid = request.forms.get('ssid')
     psk = request.forms.get('psk')
     if set_wifi(ssid, psk):
-        return "<p>SSID and PSK set correctly</p>"
+        return "<p>SSID and PSK set correctly.<br><a href="setup">Menu</a></p>"
     else:
-        return "<p>Setting up WiFi failed</p>"
+        return "<p>Setting up WiFi failed.<br><a href="setup">Menu</a></p>"
+
+@get('/shutdown')
+def shutdown():
+    return "<p>Shuting down system now</p>"
+    subprocess.call(["shutdown", "now", "-h"])
 
 run(host='192.168.5.1', port=80, debug=True)
