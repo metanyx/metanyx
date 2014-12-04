@@ -260,15 +260,14 @@ deb-src http://security.debian.org/ wheezy/updates main
 EOT
 
 apt-get update
-apt-get install -f locales dialog openssh-server
+apt-get install -f locales dialog openssh-server python wpasupplicant
 
 passwd # Set a password here
 
 cat <<EOT >> /etc/network/interfaces
+auto eth0
 allow-hotplug eth0
-iface eth0 inet static
-  address 192.168.5.1
-  netmask 255.255.255.0
+iface eth0 inet dhcp
 EOT
 
 echo 'debian' > /etc/hostname
@@ -287,13 +286,19 @@ sudo cp -a rootfs/* /mnt/
 sudo cp -rfv linux-sunxi/out/lib/modules/3.4.103+ /mnt/lib/modules/
 sudo cp -rfv linux-sunxi/out/lib/firmware/ /mnt/lib/
 
+git clone http://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git
+sudo cp -a linux-firmware/rtlwifi /mnt/lib/firmware/
+sudo cp linux-firmware/rt28* /mnt/lib/firmware/
+
 sync
 sudo umount /mnt/
 ```
 
+
+
 ## Eject SD image, insert into LIME board, and boot
 
-default IP address is 192.168.5.1.
+eth0 will obtain an address via DHCP
 
 default username/password is : **root / metanyx**
 
@@ -312,18 +317,7 @@ CONFIG_RTL8192CU
 
 
 
-### loading wifi firmware:
-
-```
-git clone http://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git
-cp -a linux-firmware/rtlwifi /lib/firmware/
-cp linux-firmware/rt28* /lib/firmware/
-```
-
-
 ###Access point:
-
-    sudo apt-get install hostapd
 
 add interface=wlan1 to /etc/dnsmasq.conf
 add to /etc/network/interfaces:
