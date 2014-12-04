@@ -40,6 +40,10 @@
 - name: Update apt cache
   apt: update_cache=yes
 
+# Lock logs
+#- name: Clear logs and make immutable
+  
+
 # Remove unused packages
 - name: Remove unwanted applications
   apt:
@@ -67,6 +71,16 @@
     - htop
     - tmux
     - wavemon
+
+# Networking applications
+- name: Install networking applications
+  apt:
+    pkg: "{{ item}}"
+    state: latest
+  with_items:
+    - hostapd
+    - dnsmasq
+    - macchanger
 
 # Security tools
 - name: Install security related applications
@@ -111,8 +125,6 @@
 #    - bonescript-autorun.service
 
 # Set up DHCP on eth0
-- name: Install dnsmasq for dhcp on client-side interfaces
-  apt: pkg=dnsmasq state=latest
 - name: Set up configuration script for dnsmasq
   template: src=dnsmasq.j2 dest=/etc/dnsmasq.conf owner=root group=root mode=0644
   notify: Reload dnsmasq
