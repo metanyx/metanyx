@@ -115,6 +115,7 @@ Make uImage
 
     make -j4 ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- uImage
 
+
 It will output like:
 
 ```
@@ -128,64 +129,84 @@ Entry Point:  40008000
   Image arch/arm/boot/uImage is ready
 ```
 
+Make modules
+
 ```
 make -j4 ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- INSTALL_MOD_PATH=out modules
 make -j4 ARCH=arm CROSS_COMPILE=arm-linux-gnueabihf- INSTALL_MOD_PATH=out modules_install
-cd ..
 ```
 
-## Format SD Card
+If you get an error such as 
+
+`make[2]: *** No rule to make target `/lib/firmware/./', needed by
+`/lib/firmware/ti_3410.fw'.  Stop. ` 
+
+refer to the fix at
+http://lkml.org/lkml/2012/8/8/385
+
+    cd ..
+
+## Partition and Format SD Card
+
+### Partitioning
 
     sudo fdisk /dev/sdX
 
-*p will list your partitions*
+*p* will list your partitions
 
-if there are already partitions on your card do:
+If there are already partitions on your card do:
 
-*d enter 1*
-if you have more than one partitition press d while delete them all
+*d \<enter\> 1*
 
-create the first partition, starting from 2048
-*n enter p enter 1 enter enter +16M*
+If you have more than one partitition press *d \<enter\>*  until you have deleted them all.
 
-create second partition
+Create the first partition, starting from sector 2048
+
+*n \<enter\> p \<enter\> \<enter\> \<enter\> 1 \<enter\> \<enter\> +16M \<enter\>*
+
+Create second partition
+
 *n enter p enter 2 enter enter enter*
+*n \<enter\> p \<enter\> 2 \<enter\> \<enter\> +1600M \<enter\>*
 
-then list the created partitions:
-*p enter*
-if you did everything correctly on 4GB card you should see something like:
+List the created partitions:
+
+*p \<enter\>*
+
+If you did everything correctly on a 4GB card you should see something like:
 
 ```
-Disk /dev/sdg: 3980 MB, 3980394496 bytes
-123 heads, 62 sectors/track, 1019 cylinders, total 7774208 sectors
+Disk /dev/sdg: 3965 MB, 3965190144 bytes
+122 heads, 62 sectors/track, 1023 cylinders, total 7744512 sectors
 Units = sectors of 1 * 512 = 512 bytes
 Sector size (logical/physical): 512 bytes / 512 bytes
 I/O size (minimum/optimal): 512 bytes / 512 bytes
-Disk identifier: 0x00000000
+Disk identifier: 0x000cb540
 
    Device Boot      Start         End      Blocks   Id  System
-/dev/sdg1            2048       34815       16384   83  Linux
-/dev/sdg2           34816     7774207     3869696   83  Linux
+/dev/sdd1            2048       34815       16384   83  Linux
+/dev/sdd2           34816     3311615     1638400   83  Linux
 ```
+
+Save the partition changes
 
 *press w*
 
+### Format the partitions
 
-Format the partitions
-
-The first partition should be vfat as this is FS which the Allwinner bootloader understands
+The first partition should be vfat as this is the filesystem which the Allwinner bootloader understands
 
     sudo mkfs.vfat /dev/sdX1
 
-the second should be normal Linux EXT3 FS
+The second should be a Linux EXT3 filesystem
 
     sudo mkfs.ext3 /dev/sdX2
 
-## Write the Uboot and u-boot-sunxi-with-spl.bin
+## Write the bootloader
 
-    sudo dd if=u-boot-sunxi/u-boot-sunxi-with-spl.bin of=/dev/sdc bs=1024 seek=8
+    sudo dd if=u-boot-sunxi/u-boot-sunxi-with-spl.bin of=/dev/sdX bs=1024 seek=8
 
-## Write kernel uImage you build to the SD-card
+## Write kernel uImage you built to the SD card
 
 ```
 sudo mount /dev/sdX1 /mnt/
@@ -204,28 +225,75 @@ sudo umount /mnt/
 
 Refer to http://olimex.wordpress.com/2014/07/21/how-to-create-bare-minimum-debian-wheezy-rootfs-from-scratch/
 
+Install dependencies
+
+    sudo apt-get install qemu-user-static debootstrap binfmt-support
+
+Make directory we will build the rootfs into
+
+    mkdir rootfs
+
+Build the first step of the rootfs
+
+    sudo debootstrap --arch=armhf --foreign wheezy rootfs
+
 ```
-sudo apt-get install qemu-user-static debootstrap binfmt-support
-mkdir rootfs
-sudo debootstrap --arch=armhf --foreign wheezy rootfs
 sudo cp /usr/bin/qemu-arm-static rootfs/usr/bin/
 sudo cp /etc/resolv.conf rootfs/etc
 
-*** got to here ***
+sudo chroot rootfs
 
-sudo echo "sunxi_emac" >> rootfs/etc/modules
+export distro=wheezy
+export LANG=C
+
+/debootstrap/debootstrap --second-stage
+
+cat <<EOT > /etc/sources.list
+deb http://http.debian.net/debian wheezy main
+deb-src http://http.debian.net/debian wheezy main
+
+deb http://http.debian.net/debian wheezy-updates main
+deb-src http://http.debian.net/debian wheezy-updates main
+
+deb http://security.debian.org/ wheezy/updates main
+deb-src http://security.debian.org/ wheezy/updates main
+EOT
+
+apt-get update
+apt-get install -f locales dialog openssh-server
+
+passwd # Set a password here
+
+cat <<EOT >> /etc/network/interfaces
+allow-hotplug eth0
+iface eth0 inet static
+  address 192.168.5.1
+  netmask 255.255.255.0
+EOT
+
+echo 'debian' > /etc/hostname
+echo 'sunxi_emac' >> rootfs/etc/modules
+echo T0:2345:respawn:/sbin/getty -L ttyS0 115200 vt100 >> /etc/inittab
+rm -rf lib/modules/*
+mkdir lib/modules
+rm -rf lib/firmware/
+exit
+
+sudo rm rootfs/etc/resolv.conf
+sudo rm rootfs/usr/bin/qemu-arm-static
+
 sudo mount /dev/sdX2 /mnt
 sudo cp -a rootfs/* /mnt/
-sudo rm -rf /mnt/lib/modules/*
-sudo mkdir /mnt/lib/modules/*
 sudo cp -rfv linux-sunxi/out/lib/modules/3.4.103+ /mnt/lib/modules/
-sudo rm -rf /mnt/lib/firmware/
 sudo cp -rfv linux-sunxi/out/lib/firmware/ /mnt/lib/
+
 sync
 sudo umount /mnt/
 ```
 
-## Eject SD image, insert into LIME board, connect UART and boot
+## Eject SD image, insert into LIME board, and boot
+
+default IP address is 192.168.5.1.
 
 default username/password is : **root / metanyx**
 
