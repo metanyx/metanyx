@@ -81,6 +81,7 @@
     - hostapd
     - dnsmasq
     - macchanger
+    - usb-modeswitch
 
 # Security tools
 - name: Install security related applications
