@@ -298,7 +298,7 @@ sudo umount /mnt/
 
 ## Eject SD image, insert into LIME board, and boot
 
-eth0 will obtain an address via DHCP
+Your unit will obtain an address via DHCP over the ethernet port
 
 default username/password is : **root / metanyx**
 
