@@ -2,7 +2,7 @@
 
 # Set up the management interface
 - name: Create manager directory in /opt/metanyx
-  file: path=/opt/metanyx/manager state=directory owner=root group=root mode=0700
+  file: path=/opt/metanyx/manager/views state=directory owner=root group=root mode=0700
 
 - name: Install bottle.py
   copy: src=bottle.py dest=/opt/metanyx/manager/ owner=root group=root mode=0600
@@ -10,11 +10,16 @@
 - name: install systemd script for manager
   copy: src=metanyx-manager.service dest=/etc/systemd/system/metanyx-manager owner=root group=root mode=0600
 
-- name: install systemd script for manager
+- name: install sysvinit script for manager
   copy: src=metanyx-manager.sysvinit dest=/etc/init.d/metanyx-manager owner=root group=root mode=0700
 
 - name: Install manage.py
   copy: src=manage.py dest=/opt/metanyx/manager/ owner=root group=root mode=0700
+
+- name: Install manager views
+  copy: src={{ item }} dest=/opt/metanyx/manager/views owner=root group=root mode=0600
+  with_items:
+    - setup_template.tpl 
 
 - name: Start metanyx-manager.service
   command: systemctl enable metanyx-manager
