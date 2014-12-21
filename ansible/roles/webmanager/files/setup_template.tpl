@@ -50,4 +50,5 @@
   <a href="https://check.torproject.org" target="new">Tor Check</a>
 </p>
 
-<p>To implement next: reboot, new tor ID, change password, various diagnostic and status pages</p>
+<p>To implement next:<br> 
+new tor ID, change password, various diagnostic and status pages, change mac address, 3g, change hostname</p>

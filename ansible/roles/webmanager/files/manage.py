@@ -58,12 +58,12 @@ def do_setup():
 
 @get('/shutdown')
 def shutdown():
-    return "<p>Shuting down system now</p>"
     subprocess.call(["shutdown", "now", "-h"])
+    return "<p>Shuting down system now</p>"
 
 @get('/reboot')
 def reboot():
-    return "<p>Rebooting system now</p>"
     subprocess.call(["reboot"])
+    return "<p>Rebooting system now</p>"
 
 run(host='192.168.5.1', port=80, debug=True)
