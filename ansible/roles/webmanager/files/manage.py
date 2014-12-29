@@ -4,9 +4,9 @@ import subprocess
 from bottle import get, post, request, run, route, template
 
 usb_count = 2
+interfaces_file = '/etc/network/interfaces'
 
 def set_wifi_client(ssid, psk, iface='wlan0'):
-    interfaces_file = '/etc/network/interfaces'
     wpa_ssid = '    wpa-ssid ' + ssid
     wpa_psk = '    wpa-psk ' + psk
     subprocess.call(["ifdown", iface])
@@ -39,6 +39,23 @@ def set_wifi_ap(ssid, psk, iface='wlan1'):
             interfaces.write(re.sub(r'^    wpa-psk.*', wpa_psk, line))
     subprocess.call(["ifup", iface])
     return True
+
+#def config_interface(iface, mode, data, enable=True):
+#    subprocess.call(["ifdown", iface])
+#    with open(interfaces_file, "r") as interfaces:
+#        lines = interfaces.readlines()
+#    with open(interfaces_file, "w") as interfaces:
+#        for line in lines:
+#            if (iface + '_begin') in line:
+#
+#            interfaces.write(re.sub(r'^    wpa-ssid.*', wpa_ssid, line))
+#    with open(interfaces_file, "r") as interfaces:
+#        lines = interfaces.readlines()
+#    with open(interfaces_file, "w") as interfaces:
+#        for line in lines:
+#            interfaces.write(re.sub(r'^    wpa-psk.*', wpa_psk, line))
+#    subprocess.call(["ifup", iface])
+
 
 
 @route('/')

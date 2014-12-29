@@ -40,10 +40,6 @@
 - name: Update apt cache
   apt: update_cache=yes
 
-# Lock logs
-#- name: Clear logs and make immutable
-  
-
 # Remove unused packages
 - name: Remove unwanted applications
   apt:
@@ -82,7 +78,6 @@
     - dnsmasq
     - macchanger
     - usb-modeswitch
-    - hostapd
 
 # Security tools
 - name: Install security related applications
@@ -95,62 +90,31 @@
     - iptables-persistent
     - macchanger
 
-# Disable packaged BeagleBone web services
-#- name: Disable default BeagleBone web services
-#  service:
-#    name: "{{ item }}"
-#    state: stopped
-#    enabled: no
-#  with_items:
-#    - cloud9.service
-#    - bonescript-autorun.service
-#    - bonescript.socket
-#    - bonescript.service
-
-# Disable packaged BeagleBone web services
-#- name: Disable default BeagleBone web services
-#  command: systemctl disable --ignore-dependencies -f "{{ item }}"
-#  with_items:
-#    - cloud9.service
-#    - cloud9.socket
-#    - bonescript.service
-#    - bonescript.socket
-#    - bonescript-autorun.service
-
-#- name: Remove default Beaglebone web services
-#  command: 'rm -f /lib/systemd/system/"{{ item }}"'
-#  with_items:
-#    - cloud9.service
-#    - cloud9.socket
-#    - bonescript.service
-#    - bonescript.socket
-#    - bonescript-autorun.service
-
 # Set up DHCP on eth0
 - name: Set up configuration script for dnsmasq
   template: src=dnsmasq.j2 dest=/etc/dnsmasq.conf owner=root group=root mode=0644
   notify: Reload dnsmasq
 
 # Set up Hostapd config for Access Point
-- name: Install hostapd.conf
+- name: Create hostapd.conf
   template: 
-    src: hostapd.j2 
+    src: hostapd_conf.j2 
     dest: /etc/hostapd/hostapd.conf
     owner: root
     group: root
     mode: 0600
+- name: Copy hostapd default config
+  copy: src=hostapd_default dest=/etc/default/hostapd owner=root group=root mode=0644
 
 # Install tor
 - name: Install TOR
   apt: pkg=tor state=latest
 - name: Set up torrc configuration file
   template: src=torrc.j2 dest=/etc/tor/torrc owner=root group=root mode=0644
-#  notify: Restart tor
 
 # Set up iptables rules and service
 - name: Install iptables rules
   template: src=iptables.j2 dest=/root/iptables.sh owner=root group=root mode=0700
   notify: Load iptables rules
-
 - name: Start iptables-persistent
   service: name=iptables-persistent enabled=yes

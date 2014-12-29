@@ -8,28 +8,30 @@
 auto lo
 iface lo inet loopback
 
-# Primary client-side network interface
+# eth0_begin
 auto eth0
 allow-hotplug eth0
 iface eth0 inet static
     address 192.168.5.1
     netmask 255.255.255.0
     network 192.168.5.0
+# eth0_end
 
-# WiFi
+# wlan0_begin
 auto {{ external_interface }}
 allow-hotplug wlan0
 iface {{ external_interface }} inet dhcp
     wpa-ssid "{{ wpa_ssid }}"
     wpa-psk "{{ wpa_psk }}"
+# wlan0_end
 
+#wlan1_begin
 auto wlan1
 allow-hotplug wlan1
 iface wlan1 inet static
-    address 192.168.5.2
+    address 192.168.6.2
     netmask 255.255.255.0
-#    wpa-ssid "{{ wpa_ssid }}"
-#    wpa-psk "{{ wpa_psk }}"
+#wlan2_end
 
 # BeagleBone Black Ethernet/RNDIS gadget (g_ether)
 # ... or on host side, usbnet and random hwaddr
