@@ -82,6 +82,7 @@
     - dnsmasq
     - macchanger
     - usb-modeswitch
+    - hostapd
 
 # Security tools
 - name: Install security related applications
@@ -129,6 +130,15 @@
 - name: Set up configuration script for dnsmasq
   template: src=dnsmasq.j2 dest=/etc/dnsmasq.conf owner=root group=root mode=0644
   notify: Reload dnsmasq
+
+# Set up Hostapd config for Access Point
+- name: Install hostapd.conf
+  template: 
+    src: hostapd.j2 
+    dest: /etc/hostapd/hostapd.conf
+    owner: root
+    group: root
+    mode: 0600
 
 # Install tor
 - name: Install TOR

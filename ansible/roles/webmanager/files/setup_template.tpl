@@ -5,18 +5,27 @@
     <br>
     <input type="radio" name="eth0" id="dhcp_server" value="dhcp_server" checked="checked"/>
     <label for="dhcp_server">DHCP Server</label>
+    <br>
     <input type="radio" name="eth0" id="static_server" value="static_server" />
     <label for="static_server">Static IP Server</label>
+    <br>
     <input type="radio" name="eth0" id="client" value="client" />
     <label for="client">DHCP client</label>
+    <br>
+    <input type="radio" name="eth0" id="disabled" value="disabled" />
+    <label for="disabled">Off</label>
     <br><br>
 
     <label>wlan0</label>
     <br>
     <input type="radio" name="wlan0" id="AP" value="AccessPoint" />
     <label for="AP">Access Point</label>
+    <br>
     <input type="radio" name="wlan0" id="client" value="Client" checked="checked" />
     <label for="client">client</label>
+    <br>
+    <input type="radio" name="wlan0" id="disabled" value="disabled" />
+    <label for="disabled">Off</label>
 
     %if usb_count > 1:
     <br><br>
@@ -24,8 +33,12 @@
     <br>
     <input type="radio" name="wlan1" id="AP" value="AccessPoint" checked="checked"/>
     <label for="AP">Access Point</label>
+    <br>
     <input type="radio" name="wlan1" id="client" value="Client" />
     <label for="client">client</label>
+    <br>
+    <input type="radio" name="wlan1" id="disabled" value="disabled" />
+    <label for="disabled">Off</label>
     %end
 
     <br><br>

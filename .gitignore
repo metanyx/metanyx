@@ -1,3 +1,2 @@
 *.swp
 ansible/group_vars/torproxy
-.*

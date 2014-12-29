@@ -23,6 +23,14 @@ iface {{ external_interface }} inet dhcp
     wpa-ssid "{{ wpa_ssid }}"
     wpa-psk "{{ wpa_psk }}"
 
+auto wlan1
+allow-hotplug wlan1
+iface wlan1 inet static
+    address 192.168.5.2
+    netmask 255.255.255.0
+#    wpa-ssid "{{ wpa_ssid }}"
+#    wpa-psk "{{ wpa_psk }}"
+
 # BeagleBone Black Ethernet/RNDIS gadget (g_ether)
 # ... or on host side, usbnet and random hwaddr
 # Note on some boards, usb0 is automaticly setup with an init script
