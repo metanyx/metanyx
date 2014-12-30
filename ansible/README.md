@@ -9,6 +9,8 @@ git clone https://github.com/ansible/ansible.git ~/ansible
 source ~/ansible/hacking/env-setup
 ```
 
+otherwise see the [Ansible documentation](http://docs.ansible.com/intro_installation.html)
+
 #### Change into the ansible directory within the TOR-Bone repo
 ```
 cd ansible
