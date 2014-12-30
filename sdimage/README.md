@@ -295,61 +295,14 @@ sudo umount /mnt/
 ```
 
 
-
 ## Eject SD image, insert into LIME board, and boot
 
 Your unit will obtain an address via DHCP over the ethernet port
 
-default username/password is : **root / metanyx**
+default username/password is : **root / metanyx** and SSH is listening on port 22
 
+Proceed to install metanyx to your unit via the [ansible-playbook](../ansible/README.md)
 
-
-# Some more notes for me to move elsewhere
-
-### Kernel configs to add in make menuconfig:
-
-
-CONFIG_HAVE_AOUT
-CONFIG_MTD
-CONFIG_SUNXI_EMAC
-CONFIG_ATH9K_RATE_CONTROL
-CONFIG_RTL8192CU
-
-
-
-###Access point:
-
-add interface=wlan1 to /etc/dnsmasq.conf
-add to /etc/network/interfaces:
-
-```
-# Access point interface
-auto wlan1
-allow-hotplug wlan1
-iface wlan1 inet static
-    address 192.168.6.2
-    netmask 255.255.255.0
-    network 192.168.6.0
-```
-
-    vi /etc/hostapd/hostapd.conf:
-
-enter stuff...
-
-    vi /etc/default/hostapd
-
-*DAEMON_CONF="/etc/hostapd/hostapd.conf"*
-
-#### For edimax:
-```
-git clone https://github.com/jenssegers/RTL8188-hostapd
-cd RTL8188-hostapd/hostapd
-```
-
-```
-make
-mv hostapd /usr/sbin/hostapd
-```
 
 ## References
 http://linux-sunxi.org/Toolchain#Debian
