@@ -83,4 +83,9 @@ def reboot():
     subprocess.call(["reboot"])
     return "<p>Rebooting system now</p>"
 
+@get('/service')
+def service(service='tor', state='restart'):
+    subprocess.call(["service", service, state])
+    return "<p>%sing %s now</p>" % (state, service)
+
 run(host='192.168.5.1', port=80, debug=True)

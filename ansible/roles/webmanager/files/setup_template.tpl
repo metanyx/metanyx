@@ -60,6 +60,7 @@
 <p>
   <a href="shutdown">Shutdown</a>
   <a href="reboot">Reboot</a>
+  <a href="service">Restart Tor</a>
   <a href="https://check.torproject.org" target="new">Tor Check</a>
 </p>
 

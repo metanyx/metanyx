@@ -80,7 +80,13 @@ $IPTABLES -A INPUT -i lo -j ACCEPT
 
 # Accept client-side interfaces
 for i in $INT_INTERFACES; do
-  $IPTABLES -A INPUT -i $i -j ACCEPT 
+  $IPTABLES -A INPUT -i $i -j ACCEPT
+  $IPTABLES -A INPUT -i $i -p tcp -d 192.168.5.1 --dport 22 -m state --state NEW -j ACCEPT
+  $IPTABLES -A INPUT -i $i -p tcp -d 192.168.5.1 --dport 80 -m state --state NEW -j ACCEPT
+  $IPTABLES -A INPUT -i $i -p udp --dport 67:68 --sport 67:68 -j ACCEPT
+  $IPTABLES -A INPUT -i $i -p tcp -d 192.168.5.0/24 -j DROP
+  $IPTABLES -A INPUT -i $i -p tcp -d 192.168.6.0/24 -j DROP
+  $IPTABLES -A INPUT -i $i -j ACCEPT
 done
 
 ### Default Drop
