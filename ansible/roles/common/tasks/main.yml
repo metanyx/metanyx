@@ -97,7 +97,7 @@
     - hostapd_nl80211
     - hostapd_rtl8188
 - name: Link hostapd binary
-  file: path=/usr/sbin/hostapd src=/opt/metanyx/bin/hostapd_nl80211 force=yes state=link
+  file: path=/usr/sbin/hostapd src=/opt/metanyx/bin/hostapd_rtl8188 force=yes state=link
 
 # Set up DHCP on eth0
 - name: Set up configuration script for dnsmasq
