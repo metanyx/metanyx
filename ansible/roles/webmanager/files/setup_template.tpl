@@ -18,14 +18,21 @@
 
     <label>wlan0</label>
     <br>
-    <input type="radio" name="wlan0" id="AP" value="AccessPoint" />
+    <input type="radio" name="wlan0-action" id="AP" value="AccessPoint" />
     <label for="AP">Access Point</label>
     <br>
-    <input type="radio" name="wlan0" id="client" value="Client" checked="checked" />
+    <input type="radio" name="wlan0-action" id="client" value="Client" checked="checked" />
     <label for="client">client</label>
     <br>
-    <input type="radio" name="wlan0" id="disabled" value="disabled" />
+    <input type="radio" name="wlan0-action" id="disabled" value="disabled" />
     <label for="disabled">Off</label>
+    <br>
+    <br>
+    <input type="radio" name="wlan0-device" id="edimax" value="Edimax" />
+    <label for="edimax">Edimax</label>
+    <br>
+    <input type="radio" name="wlan0-device" id="nl" value="nl" />
+    <label for="nl">nl</label>
 
     %if usb_count > 1:
     <br><br>
@@ -65,4 +72,4 @@
 </p>
 
 <p>To implement next:<br> 
-new tor ID, change password, various diagnostic and status pages, change mac address, 3g, change hostname</p>
+change password, various diagnostic and status pages, change mac address, 3g, change hostname</p>
