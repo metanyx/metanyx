@@ -2,4 +2,7 @@
 - hosts: all
   roles:
     - common
+    - { role: beagleboneblack, when: "target_hw == 'beaglebone'" }
     - webmanager
+  vars:
+    external_interface: wlan0

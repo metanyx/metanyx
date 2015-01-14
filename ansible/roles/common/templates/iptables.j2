@@ -5,6 +5,16 @@
 
 ############################## "{{ ansible_hostname }}" Firewall ###################################
 
+if $1; then
+  EXT_INTERFACE="$2"
+  INT_INTERFACES="$1 usb0 $3"
+  AP_INTERFACE="$3"
+else
+  EXT_INTERFACE="wlan0"
+  INT_INTERFACES="eth0 usb0 wlan1"
+  AP_INTERFACE="wlan1"
+fi
+
 EXT_INTERFACE="{{ external_interface }}"
 INT_INTERFACES="eth0 usb0 wlan1"
 AP_INTERFACE="wlan1"

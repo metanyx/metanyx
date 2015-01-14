@@ -1,5 +1,5 @@
-Running Ansible to provision the TOR-Bone
------------------------------------------
+Running Ansible to provision the metanyx
+----------------------------------------
 
 #### First, install ansible. 
 You can just clone their repo and source an environment file
@@ -11,7 +11,7 @@ source ~/ansible/hacking/env-setup
 
 otherwise see the [Ansible documentation](http://docs.ansible.com/intro_installation.html)
 
-#### Change into the ansible directory within the TOR-Bone repo
+#### Change into the ansible directory within the metanyx repo
 ```
 cd ansible
 ```
@@ -20,7 +20,7 @@ cd ansible
 ```
 mkdir group_vars
 cat > group_vars/torproxy << __CONF__
-external_interface: wlan0
+target_hw: <olimex|beaglebone>
 wpa_ssid: <your-ssid>
 wpa_psk: <your_psk>
 dns_servers: 

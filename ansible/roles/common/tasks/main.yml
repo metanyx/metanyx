@@ -68,6 +68,15 @@
     - tmux
     - wavemon
 
+- name: Install useful dev packages
+  apt:
+    pkg: "{{ item }}"
+    state: latest
+  with_items:
+    - git
+    - python-yaml
+    - python-jinja2
+
 # Networking applications
 - name: Install networking applications
   apt:
@@ -78,6 +87,7 @@
     - dnsmasq
     - macchanger
     - usb-modeswitch
+    - iw
 
 # Security tools
 - name: Install security related applications
@@ -117,7 +127,7 @@
   notify: Restart hostapd
 
 # Install tor
-- name: Install TOR
+- name: Install Tor
   apt: pkg=tor state=latest
 - name: Set up torrc configuration file
   template: src=torrc.j2 dest=/etc/tor/torrc owner=root group=root mode=0644
@@ -128,3 +138,9 @@
   notify: Load iptables rules
 - name: Start iptables-persistent
   service: name=iptables-persistent enabled=yes
+
+# Pull down project and ansible
+- name: Clone metanyx git repo
+  git: repo=https://github.com/metanyx/metanyx.git dest=/opt/metanyx/src/
+- name: Clone ansible for local installs
+  git: repo=https://github.com/ansible/ansible recursive=yes dest=/opt/ansible

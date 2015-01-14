@@ -1,36 +1,48 @@
 metanyx
 ========
 
-The perfect gift for Fathers Day.
-
-also: A Transparent TOR proxy in a little box.
+A transparent [Tor](https://www.torproject.org/) proxy in a little box.
 
 *please, don't trust this with your life, metanyx is still in it's infancy*
 
+About
+-----
+
+I've been hacking away at this slowly for a while now, starting with the BeagleBone
+Black and now utilising the OlinuXino A20 LIME as my main focus of attention.
+
+![Prototype](/doc/photo_prototype_1.jpg)
 
 Get It
 ------
 
-You can grab an image file at https://metanyx.net
+You can grab an image for the BeagleBone Black via https://metanyx.net
 
-Otherwise continue on to set up the system utilising ansible.
+OlinuXino images are still on their way, I'll put one up once the web interface is good.
 
-How-to
-------
+Otherwise continue on to configure a Debian ARM system as a metanyx unit
 
-*Development is now focusing on the [Olimex A20-OLinuXino-Lime](https://www.olimex.com/Products/OLinuXino/A10/A10-OLinuXino-LIME/open-source-hardware) board.*
-*I hope to support multiple boards, however the most feature-rich result will be with the Olimex board*
+How to build a metanyx
+----------------------
 
-### Set Up Hardware
+All technical steps have been written assuming that the user is using a Debian system. sorrynotsorry
+
+Development is presently focused on the [Olimex A20-OLinuXino-Lime](https://www.olimex.com/Products/OLinuXino/A10/A10-OLinuXino-LIME/open-source-hardware) board.
+I hope to support multiple boards, however the most feature rich result will be with the Olimex board
+
+### 1) Setup the hardware
+
+First check the [compatable hardware](#compatable-hardware) section below.
 
 #### Olimex
 
-See readme [sdimage](sdimage/README.md)
+See [sdimage](sdimage/README.md)
 
 #### BeagleBone Black
 
-
 In the beginning, I went ahead and removed the serial number sticker from the bone.
+
+The BeagleBoneBlack playbook has been tested against the official BBB Debian firmware, of some version...
 
  **Flash an SD card with a Debian image**
 
@@ -72,27 +84,31 @@ Once powered up you should see a new network interface.
 
 - Reboot
 
-### Run the provided ansible playbook
-[Instructions](https://github.com/auraltension/metanyx/tree/master/ansible)
+### 2) Run the provided ansible playbook
+[Instructions](https://github.com/metanyx/metanyx/tree/master/ansible)
 
-### Reboot your new metanyx
+### 3) Reboot your new metanyx
 Just pull the power from the unit.
 
 Once you've done this, plug the ethernet cable into your computer, and a wireless USB dongle into the units 
 USB port.  If you're feeling generous you could use an ethernet switch and share the darkness with your friends 
-or neighbours ( although you'll  want to set a root password).  Ensure any other connections to your computer 
-are disabled, such as your local WiFi.
+or neighbours ( although you'll  want to set a root password and will put you at more risk).  
+Ensure any other connections to your computer are disabled, such as your local WiFi.
 
 Then you can go ahead and plug it back in, it'll take about a minute to boot and give you an IP address.
 
-### Check that you're properly configured
-Visit https://check.torproject.org/ to confirm that you are now surfing via TOR. Cowabunga!
+You can browse to the metanyx web interface at http://192.168.5.1
+
+### 4) Check that you're properly configured
+Visit https://check.torproject.org/ to confirm that you are now surfing via Tor. Cowabunga!
+
+![screenshot](doc/screenshot-setup.png)
 
 Compatable Hardware
 -------------------
 
-### ARM Boards presently supported:
-- BeagleBone Black revC
+### ARM boards presently supported:
+- BeagleBone Black revC (likely broken right now sorry, but the image on the site is good)
 - Olimex OLinuXino LIME A20
 
 ### WiFi devices
@@ -101,7 +117,7 @@ The following wireless devices are considered stable when used as part of the me
 * Alfa AWUS036NH USB WiFi
 * Edimax EW-7811Un
 
-There is also a list of [officially tested BeaglebOne Black WiFi devices](http://elinux.org/Beagleboard:BeagleBoneBlack#WIFI_Adapters), any of which I would presume to work if listed to work with Debian.
+There is also a list of [officially tested BeagleBone Black WiFi devices](http://elinux.org/Beagleboard:BeagleBoneBlack#WIFI_Adapters), any of which I would presume to work if listed to work with Debian.
 
 Known Issues
 ------------
