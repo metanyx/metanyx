@@ -141,6 +141,6 @@
 
 # Pull down project and ansible
 - name: Clone metanyx git repo
-  git: repo=https://github.com/metanyx/metanyx.git dest=/opt/metanyx/src/
+  git: repo=https://github.com/metanyx/metanyx.git dest=/opt/metanyx/src/ update=yes
 - name: Clone ansible for local installs
   git: repo=https://github.com/ansible/ansible recursive=yes dest=/opt/ansible
