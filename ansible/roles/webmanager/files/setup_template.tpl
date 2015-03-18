@@ -16,6 +16,7 @@
         <ul>  
           <li><a rel="external" href="setup">Setup</a></li>  
           <li><a rel="external" href="status">Status</a></li>  
+          <li><a rel="external" href="update">Update</a></li>  
           <li><a rel="external" href="https://metanyx.net" target="new">About</a></li>  
           <li><a rel="external" href="shutdown">Shutdown</a></li>  
           <li><a rel="external" href="reboot">Reboot</a></li>  

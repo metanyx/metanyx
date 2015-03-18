@@ -63,8 +63,8 @@ nav ul li a {
   font-weight: bold;
 }
 nav ul li a:hover {
-  background: #deff90;
-  color: #485e0f;
+  background:#aba6a6;
+  color: #000000;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
   border-radius: 3px;
