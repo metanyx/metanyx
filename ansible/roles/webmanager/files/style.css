@@ -1,32 +1,19 @@
-/* page core */
-
 body {
   font-family:Arial,Helvettica,sans-serif;
-  color:#aba6a6;
-  background-color:#000000;
+  color:#000000;
+  background-color:#fffff9;
+  text-align: center;
 }
 
 div#core {  
-  display: block;  
+  display: block;
+  margin: 0 auto;
   clear: both;  
   margin-bottom: 20px;  
+  width: 470px;
+  max-width: 80%;
+  text-align: center;
 } 
-
-div#core label{
-/*
-    display: inline-block;
-    float: left;
-    clear: left;
-    width: 120px;
-    text-align: left;
-*/
-}
-
-input {
-/*  display: inline-block;
-  float: left;
-*/
-}
 
 fieldset { 
   display: block;
@@ -37,6 +24,11 @@ fieldset {
   padding-left: 0.75em;
   padding-right: 0.75em;
   border: 1px solid #575c7d;
+  text-align: left;
+}
+
+.text-input {
+  min-width: 220px;
 }
 
 legend {
@@ -44,7 +36,8 @@ legend {
 }
 
 nav {
-  display: block;
+  display: inline-block;
+  text-align: center;
   margin-bottom: 10px;
 }
 nav ul {

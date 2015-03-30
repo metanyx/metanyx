@@ -4,6 +4,7 @@
   <meta charset="utf-8">  
   <title>metanyx administration</title>  
   <meta name="metanyx" content="Welcome to metanyx.">  
+  <meta name="viewport" content="width=device-width"> 
   <link rel="stylesheet" href="static/style.css?v=1">  
 </head>  
   
@@ -55,16 +56,16 @@
           %end
             <br>
 
-          <input type="radio" name="ap_iface" id="wlan1" value="wlan1" checked="checked">
-          <label for="wlan1">wlan1</label>
-          <input type="radio" name="ap_iface" id="wlan0" value="wlan0">
-          <label for="wlan0">wlan0</label>
+          <input type="radio" name="ap_iface" id="wlan1_ap" value="wlan1" checked="checked">
+          <label for="wlan1_ap">wlan1</label>
+          <input type="radio" name="ap_iface" id="wlan0_ap" value="wlan0">
+          <label for="wlan0_ap">wlan0</label>
           <br><br>
 
           <label for="ssid">SSID</label><br>
-          <input id="ssid" name="ap_ssid" type="text"><br>
+          <input id="ssid" name="ap_ssid" type="text" class="text-input"><br>
           <label for="psk">WPA PSK</label><br>
-          <input pattern=".{10,63}" title="10-63 characters" id="psk" name="ap_psk" type="password"><br>
+          <input pattern=".{10,63}" title="10-63 characters" id="psk" name="ap_psk" type="password" class="text-input"><br>
 
         </fieldset>
 
@@ -80,14 +81,14 @@
           %end
             <br>
 
-          <input type="radio" name="client_iface" id="wlan1" value="wlan1">
-          <label for="wlan1">wlan1</label>
-          <input type="radio" name="client_iface" id="wlan0" value="wlan0" checked="checked">
-          <label for="wlan0">wlan0</label>
+          <input type="radio" name="client_iface" id="wlan1_client" value="wlan1">
+          <label for="wlan1_client">wlan1</label>
+          <input type="radio" name="client_iface" id="wlan0_client" value="wlan0" checked="checked">
+          <label for="wlan0_client">wlan0</label>
           <br><br>
 
           SSID<br>
-          <select name="client_ssid">
+          <select name="client_ssid" class="text-input">
             <%
               import subprocess 
               aps = subprocess.check_output(['iw', 'dev', 'wlan0', 'scan'])
@@ -101,7 +102,7 @@
           </select><br>
 
           WPA PSK<br>
-          <input name="client_psk" type="password">
+          <input name="client_psk" type="password" class="text-input">
 
         </fieldset>
 
