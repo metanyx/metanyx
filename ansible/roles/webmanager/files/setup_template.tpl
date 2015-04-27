@@ -37,7 +37,7 @@
           <input type="radio" name="eth_function" id="static_server" value="static_server">
           <label for="static_server">Static IP Server</label>
           <br>
-          <input type="radio" name="eth_function" id="client" value="client">
+          <input type="radio" name="eth_function" id="client" value="dhcp_client">
           <label for="client">DHCP client</label>
           <br>
           <input type="radio" name="eth_function" id="disabled" value="disabled">
@@ -72,38 +72,46 @@
         <fieldset>
           <legend>WiFi Client</legend>
 
-          %if usb_count < 2:
-            <input name="enabled" id="client_enable" value="client" type="radio" >
-            <label for="client_enable">Enable</label>
+          %if not 'None' in wlan_client:
+
+                %if usb_count < 2:
+                  <input name="enabled" id="client_enable" value="client" type="radio" >
+                  <label for="client_enable">Enable</label>
+                %else:
+                  <input name="client_enable" id="client_enable" value="1" type="checkbox">
+                  <label for="client_enable">Enable</label>
+                %end
+                  <br>
+      
+                <input type="radio" name="client_iface" id="wlan1_client" value="wlan1">
+                <label for="wlan1_client">wlan1</label>
+                <input type="radio" name="client_iface" id="wlan0_client" value="wlan0" checked="checked">
+                <label for="wlan0_client">wlan0</label>
+                <br><br>
+      
+                SSID<br>
+                <select name="client_ssid" class="text-input">
+                  <%
+                    if not 'None' in wlan_client:
+                        import subprocess 
+                        aps = subprocess.check_output(['iw', 'dev', 'wlan0', 'scan'])
+                        for line in aps.split('\n'):
+                            if 'SSID' in line and not ('<' or '>') in line:
+                                ssid = line.split(": ")[1]
+                  %>
+                  <option value="{{ ssid }}">{{ ssid }}</option>
+                            %end
+                        %end
+                    %end
+                </select><br>
+      
+                WPA PSK<br>
+                <input name="client_psk" type="password" class="text-input">
           %else:
-            <input name="client_enable" id="client_enable" value="1" type="checkbox">
-            <label for="client_enable">Enable</label>
+              <p>No wifi device found.</p>
+
           %end
-            <br>
-
-          <input type="radio" name="client_iface" id="wlan1_client" value="wlan1">
-          <label for="wlan1_client">wlan1</label>
-          <input type="radio" name="client_iface" id="wlan0_client" value="wlan0" checked="checked">
-          <label for="wlan0_client">wlan0</label>
-          <br><br>
-
-          SSID<br>
-          <select name="client_ssid" class="text-input">
-            <%
-              import subprocess 
-              aps = subprocess.check_output(['iw', 'dev', 'wlan0', 'scan'])
-              for line in aps.split('\n'):
-                  if 'SSID' in line and not ('<' or '>') in line:
-                      ssid = line.split(": ")[1]
-            %>
-                      <option value="{{ ssid }}">{{ ssid }}</option>
-                  %end
-              %end
-          </select><br>
-
-          WPA PSK<br>
-          <input name="client_psk" type="password" class="text-input">
-
+  
         </fieldset>
 
         <fieldset>

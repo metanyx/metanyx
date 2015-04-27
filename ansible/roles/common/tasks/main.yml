@@ -4,6 +4,14 @@
 - name: Create /opt/metanyx
   file: path=/opt/metanyx/bin state=directory owner=root group=root mode=0700
 
+# Install udev rules
+- name: udev | Copy udev rules
+  copy: src=90-metanyx.rules dest=/etc/udev/rules.d/90-metanyx.rules owner=root group=root mode=0644
+- name: udev | remove previous rules
+  command: rm -f /etc/udev/70-persistent-net.rules
+- name: udev | link net-rules
+  command: ln -s /dev/null /etc/udev/70-persistent-net.rules
+
 # Set up networking
 - name: Install networking interfaces config
   template: 
@@ -67,6 +75,7 @@
     - htop
     - tmux
     - wavemon
+    - ntp
 
 - name: Install useful dev packages
   apt:

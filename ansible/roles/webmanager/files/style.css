@@ -1,8 +1,12 @@
+/* page core */
+
 body {
   font-family:Arial,Helvettica,sans-serif;
   color:#000000;
-  background-color:#fffff9;
   text-align: center;
+  background:url('bg.jpg') no-repeat center center;
+  min-height:100%;
+  background-size:cover;
 }
 
 div#core {  
@@ -15,6 +19,10 @@ div#core {
   text-align: center;
 } 
 
+.text-input {
+  min-width: 220px;
+}
+
 fieldset { 
   display: block;
   margin-left: 2px;
@@ -25,10 +33,6 @@ fieldset {
   padding-right: 0.75em;
   border: 1px solid #575c7d;
   text-align: left;
-}
-
-.text-input {
-  min-width: 220px;
 }
 
 legend {

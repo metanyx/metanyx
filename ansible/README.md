@@ -5,7 +5,7 @@ Running Ansible to provision the metanyx
 You can just clone their repo and source an environment file
 
 ```
-git clone https://github.com/ansible/ansible.git ~/ansible
+git clone --recursive https://github.com/ansible/ansible.git ~/ansible
 source ~/ansible/hacking/env-setup
 ```
 
@@ -36,7 +36,7 @@ vi group_vars/torproxy
 #### Edit the IP address of the board you are flashing.
 
 ```
-vi metanyx 
+vi inventory
 ```
 
 This shouldn't need changing for a Beagle Bone Black with direct connection to your computer.
@@ -44,5 +44,5 @@ If you're running something which has DHCP'd to your local network you'll need t
 
 #### Finally, run the playbook
 ```
-ansible-playbook playbook.yml -i metanyx -k
+ansible-playbook playbook.yml -i inventory -k
 ```

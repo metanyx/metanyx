@@ -16,16 +16,19 @@ Black and now utilising the OlinuXino A20 LIME as my main focus of attention.
 Get It
 ------
 
-You can grab an image for the BeagleBone Black via https://metanyx.net
+If you want to buy a pre-built unit email me on the address below.  Current cost is $AU160 for a development kit,
+with discounts once I do a large batch when the project is a bit more stable.  Paypal, BTC and cash dollars only.
 
-OlinuXino images are still on their way, I'll put one up once the web interface is good.
+If you want to get a disk image to run in your own board, you can grab an image for the BeagleBone Black via 
+https://metanyx.net . OlinuXino images are still in development, I'll put one up once the web interface is good.
 
-Otherwise continue on to configure a Debian ARM system as a metanyx unit
+Otherwise continue on to configure an ARM board as a debian-based metanyx.
+
 
 How to build a metanyx
 ----------------------
 
-All technical steps have been written assuming that the user is using a Debian system. sorrynotsorry
+All technical steps have been written assuming that the user is using a Debian client. sorrynotsorry
 
 Development is presently focused on the [Olimex A20-OLinuXino-Lime](https://www.olimex.com/Products/OLinuXino/A10/A10-OLinuXino-LIME/open-source-hardware) board.
 I hope to support multiple boards, however the most feature rich result will be with the Olimex board
@@ -123,8 +126,10 @@ Known Issues
 ------------
 See [issues](https://github.com/auraltension/metanyx/issues)
 
+I also have a huge number of cards I'm working through.  If you want to contribute I'm happy to share.
+
 Contact
 -------
-email: auraltension@riseup.net (PGP key can be found in /doc)
+auraltension@riseup.net (PGP key can be found in /doc)
 
-twitter: [@auraltensn](https://twitter.com/auraltensn)
+[@auraltensn](https://twitter.com/auraltensn)

@@ -9,6 +9,13 @@ usb_count = 2
 interfaces_file = '/etc/network/interfaces'
 git_location = 'https://github.com/metanyx/metanyx.git'
 
+def wlan_client_check(iface):
+	try:
+	    update = subprocess.check_output(["ifconfig", iface])
+	    return 'wlan0'
+	except subprocess.CalledProcessError as update_error:
+	    return 'None'
+
 allowed_subprocesses = ['service', 'ln', 'ifup', 'ifdown', 'iw']
 
 def service(service, action):
@@ -50,34 +57,58 @@ def dnsmasq_config(extra_iface):
             else:
                 conf.write(re.sub(r'^interface=.*', interface, line))
 
-def iface_config(ssid, psk, iface_eth='eth0', iface_client='wlan0', iface_ap='wlan1'):
+def iface_config(ssid, psk, eth_function, iface_eth='eth0', iface_client='wlan0', iface_ap='wlan1'):
     subprocess.call(["ifdown", iface_client])
     subprocess.call(["ifdown", iface_ap])
-    iface_conf = textwrap.dedent("""\
-        # The loopback network interface
-        auto lo
-        iface lo inet loopback
+    if 'dhcp_client' in eth_function:
+	    iface_conf = textwrap.dedent("""\
+		# The loopback network interface
+		auto lo
+		iface lo inet loopback
 
-        auto %s 
-        allow-hotplug %s
-        iface %s inet static
-            address 192.168.5.1
-            netmask 255.255.255.0
-            network 192.168.5.0
+		auto %s 
+		allow-hotplug %s
+		iface %s inet dhcp
 
-        auto %s
-        allow-hotplug %s
-        iface %s inet dhcp
-            wpa-ssid %s
-            wpa-psk %s
+		auto %s
+		allow-hotplug %s
+		iface %s inet dhcp
+		    wpa-ssid %s
+		    wpa-psk %s
 
-        auto %s
-        allow-hotplug %s
-        iface %s inet static
-            address 192.168.6.2
-            netmask 255.255.255.0
-    """ % (iface_eth, iface_eth, iface_eth, iface_client, iface_client, 
-           iface_client, ssid, psk, iface_ap, iface_ap, iface_ap))
+		auto %s
+		allow-hotplug %s
+		iface %s inet static
+		    address 192.168.5.1
+		    netmask 255.255.255.0
+	    """ % (iface_eth, iface_eth, iface_eth, iface_client, iface_client, 
+		   iface_client, ssid, psk, iface_ap, iface_ap, iface_ap))
+    else:
+	    iface_conf = textwrap.dedent("""\
+		# The loopback network interface
+		auto lo
+		iface lo inet loopback
+
+		auto %s 
+		allow-hotplug %s
+		iface %s inet static
+		    address 192.168.5.1
+		    netmask 255.255.255.0
+		    network 192.168.5.0
+
+		auto %s
+		allow-hotplug %s
+		iface %s inet dhcp
+		    wpa-ssid %s
+		    wpa-psk %s
+
+		auto %s
+		allow-hotplug %s
+		iface %s inet static
+		    address 192.168.6.2
+		    netmask 255.255.255.0
+	    """ % (iface_eth, iface_eth, iface_eth, iface_client, iface_client, 
+		   iface_client, ssid, psk, iface_ap, iface_ap, iface_ap))
     with open(interfaces_file, "w") as conf:
         conf.write(iface_conf)
     subprocess.call(["ifup", iface_client])
@@ -92,7 +123,6 @@ def sys_symlink(src, dest):
     dest = '/usr/sbin/hostapd'
     subprocess.call(["ln", '-sf', src, dest])
     
-
 def set_wifi_client(ssid, psk, iface='wlan0'):
     wpa_ssid = '    wpa-ssid ' + ssid
     wpa_psk = '    wpa-psk ' + psk
@@ -113,7 +143,8 @@ def set_wifi_client(ssid, psk, iface='wlan0'):
 @route('/')
 @get('/setup') # or @route('/setup')
 def setup():
-    return template('setup_template', usb_count=usb_count)
+    wlan_client = wlan_client_check('wlan0')
+    return template('setup_template', usb_count=usb_count, wlan_client=wlan_client)
 
 @route('/static/<filename>')
 def server_static(filename):
@@ -137,16 +168,25 @@ def do_setup():
     eth_iface = 'eth0'
     eth_function = request.forms.get('eth_function')
 
+    print 'Applying config changes. metanyx will reboot when complete'
+    
+    if 'dhcp_server' in eth_function:
+        manage_iface = ap_iface
+    else:
+        manage_iface = eth_iface
+
     hostapd_config(ap_iface, ap_ssid, ap_psk, 'edimax')
     dnsmasq_config(ap_iface)
-    subprocess.call(["/root/iptables.sh", eth_iface, client_iface, ap_iface])
-    iface_config(client_ssid, client_psk, eth_iface, client_iface, ap_iface)
-    service('dnsmasq', 'restart')
-    if '1' in ap_enable:
-        service('hostapd', 'restart')
-    else:
-        service('hostapd', 'stop')
-    return '<p>Config complete. <a href="setup">Menu</a></p>'
+    subprocess.call(["/root/iptables.sh", eth_iface, client_iface, ap_iface, manage_iface ])
+    iface_config(client_ssid, client_psk, eth_function, eth_iface, client_iface, ap_iface)
+#    service('dnsmasq', 'restart')
+    #if '1' in ap_enable:
+    #    service('hostapd', 'restart')
+    #else:
+    #    service('hostapd', 'stop')
+    #service('metanyx-manager', 'restart')
+    subprocess.call(["/sbin/reboot"])
+    #return '<p>Config complete. <a href="setup">Menu</a></p>'
 
 @get('/status')
 def status():

@@ -5,19 +5,18 @@
 
 ############################## "{{ ansible_hostname }}" Firewall ###################################
 
-if $1; then
+if [ $# -ne 0 ]; then
+  echo "using args"
   EXT_INTERFACE="$2"
-  INT_INTERFACES="$1 usb0 $3"
+  INT_INTERFACES="$1 $3"
   AP_INTERFACE="$3"
+  MANAGE_INTERFACE="$4"
 else
-  EXT_INTERFACE="wlan0"
-  INT_INTERFACES="eth0 usb0 wlan1"
+  EXT_INTERFACE="{{ external_interface }}"
+  INT_INTERFACES="eth0 wlan1"
   AP_INTERFACE="wlan1"
+  MANAGE_INTERFACE="eth0"
 fi
-
-EXT_INTERFACE="{{ external_interface }}"
-INT_INTERFACES="eth0 usb0 wlan1"
-AP_INTERFACE="wlan1"
 
 # Specify allowed DNS servers
 DNS_SERVERS="{{ dns_servers | join(" ") }}"
@@ -61,8 +60,8 @@ $IPTABLES -A OUTPUT -m conntrack --ctstate INVALID -j DROP
 $IPTABLES -A FORWARD -i $AP_INTERFACE -j ACCEPT
 
 ############################### PREROUTING #####################################
-$IPTABLES -t nat -A PREROUTING -i eth0 ! -d 192.168.5.1 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -j REDIRECT --to-ports 9040
-$IPTABLES -t nat -A PREROUTING -i eth0 -p udp -m udp --dport 53 -j REDIRECT --to-ports 9053
+$IPTABLES -t nat -A PREROUTING -i $MANAGE_INTERFACE ! -d 192.168.5.1 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -j REDIRECT --to-ports 9040
+$IPTABLES -t nat -A PREROUTING -i $MANAGE_INTERFACE -p udp -m udp --dport 53 -j REDIRECT --to-ports 9053
 $IPTABLES -t nat -A PREROUTING -i $AP_INTERFACE ! -d 192.168.5.1 -p tcp -m tcp --tcp-flags FIN,SYN,RST,ACK SYN -j DNAT --to 192.168.5.1:9040
 $IPTABLES -t nat -A PREROUTING -i $AP_INTERFACE -p udp -m udp --dport 53 -j DNAT --to 192.168.5.1:9053
 

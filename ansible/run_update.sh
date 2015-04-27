@@ -1,9 +1,7 @@
 #!/usr/bin/env bash
 
-# git pull
-
+# TODO:
 # check for issues with pull
-
 # check against version in .info
 #  if not changed, exit
 
@@ -13,4 +11,5 @@ dir = $(dirname $0)
 
 cd $dir
 git pull
-ansible-playbook playbook.yml -i metanyx --connection=local
+
+ansible-playbook playbook.yml -i inventory --connection=local
