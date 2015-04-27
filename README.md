@@ -1,7 +1,7 @@
 metanyx
 ========
 
-A transparent [Tor](https://www.torproject.org/) proxy in a little box.
+A transparent [Tor](https://www.torproject.org/) proxy in a little box.  Also aims to include privacy-enhancing features.
 
 *please, don't trust this with your life, metanyx is still in it's infancy*
 
