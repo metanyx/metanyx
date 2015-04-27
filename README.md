@@ -5,13 +5,13 @@ A transparent [Tor](https://www.torproject.org/) proxy in a little box.  Also ai
 
 *please, don't trust this with your life, metanyx is still in it's infancy*
 
+
 About
 -----
 
 I've been hacking away at this slowly for a while now, starting with the BeagleBone
 Black and now utilising the OlinuXino A20 LIME as my main focus of attention.
 
-![Prototype](/doc/photo_prototype_1.jpg)
 
 Get It
 ------
@@ -19,6 +19,8 @@ Get It
 If you want to buy a pre-built unit email me on the address below.  Current cost is $AU160 for a development kit,
 and as an early supporter or contributor when I do a large batch in sexy cases you also get mates rates on those.
 Paypal, BTC and cash dollars only.
+
+![Prototype](/doc/photo_prototype_1.jpg)
 
 If you want to get a disk image to run in your own board, you can grab an image for the BeagleBone Black via 
 https://metanyx.net . OlinuXino images are still in development, I'll put one up once the web interface is good.
