@@ -17,7 +17,8 @@ Get It
 ------
 
 If you want to buy a pre-built unit email me on the address below.  Current cost is $AU160 for a development kit,
-with discounts once I do a large batch when the project is a bit more stable.  Paypal, BTC and cash dollars only.
+and as an early supporter or contributor when I do a large batch in sexy cases you also get mates rates on those.
+Paypal, BTC and cash dollars only.
 
 If you want to get a disk image to run in your own board, you can grab an image for the BeagleBone Black via 
 https://metanyx.net . OlinuXino images are still in development, I'll put one up once the web interface is good.
@@ -102,10 +103,11 @@ Then you can go ahead and plug it back in, it'll take about a minute to boot and
 
 You can browse to the metanyx web interface at http://192.168.5.1
 
+![screenshot](doc/screenshot-setup.png)
+
 ### 4) Check that you're properly configured
 Visit https://check.torproject.org/ to confirm that you are now surfing via Tor. Cowabunga!
 
-![screenshot](doc/screenshot-setup.png)
 
 Compatable Hardware
 -------------------
@@ -121,6 +123,7 @@ The following wireless devices are considered stable when used as part of the me
 * Edimax EW-7811Un
 
 There is also a list of [officially tested BeagleBone Black WiFi devices](http://elinux.org/Beagleboard:BeagleBoneBlack#WIFI_Adapters), any of which I would presume to work if listed to work with Debian.
+
 
 Known Issues
 ------------
