@@ -1,42 +1,10 @@
 ---
 
-# Set up the management interface
-- name: Create manager directory in /opt/metanyx
-  file: path={{ item }} state=directory owner=root group=root mode=0700
-  with_items:
-    - /opt/metanyx/manager/views
-    - /opt/metanyx/manager/static
+- name: Clone the webmanager repo
+  git: repo=https://github.com/metanyx/metanyx-manager.git dest=/tmp/metanyx-manager
 
-- name: Install bottle.py
-  copy: src=bottle.py dest=/opt/metanyx/manager/ owner=root group=root mode=0600
+- name: Install webmanager
+  command: bash /tmp/metanyx-manager/install.sh
 
-- name: install systemd script for manager
-  copy: src=metanyx-manager.service dest=/etc/systemd/system/metanyx-manager owner=root group=root mode=0600
-
-- name: install sysvinit script for manager
-  copy: src=metanyx-manager.sysvinit dest=/etc/init.d/metanyx-manager owner=root group=root mode=0700
-
-- name: Install manage.py
-  copy: src=manage.py dest=/opt/metanyx/manager/ owner=root group=root mode=0700
-
-- name: Install manager templates
-  copy: src={{ item }} dest=/opt/metanyx/manager/views owner=root group=root mode=0600
-  with_items:
-    - setup_template.tpl 
-    - status_template.tpl 
-
-- name: Install manager static files
-  copy: src={{ item }} dest=/opt/metanyx/manager/static owner=root group=root mode=0600
-  with_items:
-    - style.css
-
-- name: Start metanyx-manager.service
-  command: systemctl enable metanyx-manager
-  ignore_errors: yes
-  notify: Restart webmanager
-
-- name: Start metanyx-manager.service
-  command: update-rc.d metanyx-manager defaults
-  ignore_errors: yes
-  notify: Restart webmanager
-
+- name: Remove webmanager repo
+  command: rm -rf /tmp/metanyx-manager
