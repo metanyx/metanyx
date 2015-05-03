@@ -36,6 +36,10 @@ All technical steps have been written assuming that the user is using a Debian c
 Development is presently focused on the [Olimex A20-OLinuXino-Lime](https://www.olimex.com/Products/OLinuXino/A10/A10-OLinuXino-LIME/open-source-hardware) board.
 I hope to support multiple boards, however the most feature rich result will be with the Olimex board
 
+### i) Clone this repo
+
+    git clone https://github.com/metanyx/metanyx.git
+
 ### 1) Setup the hardware
 
 First check the [compatable hardware](#compatable-hardware) section below.
