@@ -1,8 +1,0 @@
-[Unit]
-Description=metanyx manager
-
-[Service]
-ExecStart=/opt/metanyx/manager/manage.py
-
-[Install]
-WantedBy=multi-user.target
