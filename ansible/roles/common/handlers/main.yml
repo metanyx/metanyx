@@ -15,8 +15,8 @@
 - name: ifup int_interface
   command: ifup eth0
 
-- name: Reload dnsmasq
-  service: name=dnsmasq enabled=yes state=reloaded
+- name: Restart dnsmasq
+  service: name=dnsmasq enabled=yes state=restarted
 
 - name: Restart hostapd
   service: name=hostapd enabled=yes state=restarted

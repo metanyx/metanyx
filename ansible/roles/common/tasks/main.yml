@@ -121,7 +121,7 @@
 # Set up DHCP on eth0
 - name: Set up configuration script for dnsmasq
   template: src=dnsmasq.j2 dest=/etc/dnsmasq.conf owner=root group=root mode=0644
-  notify: Reload dnsmasq
+  notify: Restart dnsmasq
 
 # Set up Hostapd config for Access Point
 - name: Create hostapd.conf
