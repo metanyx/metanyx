@@ -235,7 +235,7 @@ Make directory we will build the rootfs into
 
 Build the first step of the rootfs
 
-    sudo debootstrap --arch=armhf --foreign wheezy rootfs
+    sudo debootstrap --arch=armhf --foreign jessie rootfs
 
 ```
 sudo cp /usr/bin/qemu-arm-static rootfs/usr/bin/
@@ -243,20 +243,20 @@ sudo cp /etc/resolv.conf rootfs/etc
 
 sudo chroot rootfs
 
-export distro=wheezy
+export distro=jessie
 export LANG=C
 
 /debootstrap/debootstrap --second-stage
 
 cat <<EOT > /etc/sources.list
-deb http://http.debian.net/debian wheezy main
-deb-src http://http.debian.net/debian wheezy main
+deb http://http.debian.net/debian jessie main
+deb-src http://http.debian.net/debian jessie main
 
-deb http://http.debian.net/debian wheezy-updates main
-deb-src http://http.debian.net/debian wheezy-updates main
+deb http://http.debian.net/debian jessie-updates main
+deb-src http://http.debian.net/debian jessie-updates main
 
-deb http://security.debian.org/ wheezy/updates main
-deb-src http://security.debian.org/ wheezy/updates main
+deb http://security.debian.org/ jessie/updates main
+deb-src http://security.debian.org/ jessie/updates main
 EOT
 
 apt-get update
@@ -264,14 +264,14 @@ apt-get install -f locales dialog openssh-server python wpasupplicant
 
 passwd # Set a password here
 
-cat <<EOT >> /etc/network/interfaces
-auto eth0
-allow-hotplug eth0
-iface eth0 inet dhcp
-EOT
+#cat <<EOT >> /etc/network/interfaces
+#auto eth0
+#allow-hotplug eth0
+#iface eth0 inet dhcp
+#EOT
 
 echo 'debian' > /etc/hostname
-echo 'sunxi_emac' >> rootfs/etc/modules
+echo 'sunxi_emac' >> /etc/modules
 echo T0:2345:respawn:/sbin/getty -L ttyS0 115200 vt100 >> /etc/inittab
 rm -rf lib/modules/*
 mkdir lib/modules
@@ -295,11 +295,11 @@ sudo umount /mnt/
 ```
 
 
-## Eject SD image, insert into LIME board, and boot
+## Eject SD image, insert into OlinuXino LIME board, and boot
 
 Your unit will obtain an address via DHCP over the ethernet port
 
-default username/password is : **root / metanyx** and SSH is listening on port 22
+default username/password is : **root / olimex** and SSH is listening on port 22
 
 Proceed to install metanyx to your unit via the [ansible-playbook](../ansible/README.md)
 

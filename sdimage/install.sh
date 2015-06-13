@@ -222,7 +222,7 @@ mkdir rootfs
 
 #Build the first step of the rootfs
 
-sudo debootstrap --arch=armhf --foreign wheezy rootfs
+sudo debootstrap --arch=armhf --foreign jessie rootfs
 
 
 sudo cp /usr/bin/qemu-arm-static rootfs/usr/bin/
@@ -230,20 +230,20 @@ sudo cp /etc/resolv.conf rootfs/etc
 
 sudo chroot rootfs
 
-export distro=wheezy
+export distro=jessie
 export LANG=C
 
 /debootstrap/debootstrap --second-stage
 
 cat <<EOT > /etc/sources.list
-deb http://http.debian.net/debian wheezy main
-deb-src http://http.debian.net/debian wheezy main
+deb http://http.debian.net/debian jessie main
+deb-src http://http.debian.net/debian jessie main
 
-deb http://http.debian.net/debian wheezy-updates main
-deb-src http://http.debian.net/debian wheezy-updates main
+deb http://http.debian.net/debian jessie-updates main
+deb-src http://http.debian.net/debian jessie-updates main
 
-deb http://security.debian.org/ wheezy/updates main
-deb-src http://security.debian.org/ wheezy/updates main
+deb http://security.debian.org/ jessie/updates main
+deb-src http://security.debian.org/ jessie/updates main
 EOT
 
 apt-get update
@@ -251,11 +251,11 @@ apt-get install -f locales dialog openssh-server python wpasupplicant
 
 passwd # Set a password here
 
-cat <<EOT >> /etc/network/interfaces
-auto eth0
-allow-hotplug eth0
-iface eth0 inet dhcp
-EOT
+#cat <<EOT >> /etc/network/interfaces
+#auto eth0
+#allow-hotplug eth0
+#iface eth0 inet dhcp
+#EOT
 
 echo 'debian' > /etc/hostname
 echo 'sunxi_emac' >> rootfs/etc/modules
@@ -279,6 +279,7 @@ sudo cp linux-firmware/rt28* /mnt/lib/firmware/
 
 sync
 sudo umount /mnt/
+sudo eject /dec/sdX
 
 
 
