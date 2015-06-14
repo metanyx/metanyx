@@ -139,6 +139,7 @@ I also have a huge number of cards I'm working through.  If you want to contribu
 
 Contact
 -------
-auraltension@riseup.net (PGP key can be found in /doc)
+Email: auraltension@riseup.net (PGP key can be found in `doc/`)
+IRC:   #metanyx channel on freenode
 
 [@auraltensn](https://twitter.com/auraltensn)
