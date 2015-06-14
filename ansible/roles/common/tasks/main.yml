@@ -85,6 +85,7 @@
     - git
     - python-yaml
     - python-jinja2
+    - python-six
 
 # Networking applications
 - name: Install networking applications
@@ -147,6 +148,10 @@
   notify: Load iptables rules
 - name: Start iptables-persistent
   service: name=iptables-persistent enabled=yes
+  ignore_errors: yes
+- name: Start netfilter-persistent
+  service: name=netfilter-persistent enabled=yes
+  ignore_errors: yes
 
 # Pull down project and ansible
 - name: Clone metanyx git repo
