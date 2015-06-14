@@ -294,6 +294,10 @@ sync
 sudo umount /mnt/
 ```
 
+You can make a backup of your sdcard with:
+
+    sudo dd if=/dev/sdX bs=512 count=2902016 of=out/olinuxino_debian8.raw
+
 
 ## Eject SD image, insert into OlinuXino LIME board, and boot
 
