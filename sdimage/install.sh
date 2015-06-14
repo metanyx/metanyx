@@ -137,47 +137,7 @@ cd ..
 
 ### Partitioning
 
-sudo fdisk /dev/sdX
-
-#*p* will list your partitions
-#
-#If there are already partitions on your card do:
-#
-#*d \<enter\> 1*
-#
-#If you have more than one partitition press *d \<enter\>*  until you have deleted them all.
-#
-#Create the first partition, starting from sector 2048
-#
-#*n \<enter\> p \<enter\> \<enter\> \<enter\> 1 \<enter\> \<enter\> +16M \<enter\>*
-#
-#Create second partition
-#
-#*n enter p enter 2 enter enter enter*
-#*n \<enter\> p \<enter\> 2 \<enter\> \<enter\> +1600M \<enter\>*
-#
-#List the created partitions:
-#
-#*p \<enter\>*
-#
-#If you did everything correctly on a 4GB card you should see something like:
-#
-#
-#Disk /dev/sdg: 3965 MB, 3965190144 bytes
-#122 heads, 62 sectors/track, 1023 cylinders, total 7744512 sectors
-#Units = sectors of 1 * 512 = 512 bytes
-#Sector size (logical/physical): 512 bytes / 512 bytes
-#I/O size (minimum/optimal): 512 bytes / 512 bytes
-#Disk identifier: 0x000cb540
-#
-#   Device Boot      Start         End      Blocks   Id  System
-#/dev/sdd1            2048       34815       16384   83  Linux
-#/dev/sdd2           34816     3311615     1638400   83  Linux
-#
-#
-#Save the partition changes
-#
-#*press w*
+echo -e "n\np\n1\n\n+16M\nn\np\n2\n\n+1400M\nw\nq" | sudo fdisk /dev/sdX
 
 ### Format the partitions
 
