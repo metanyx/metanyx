@@ -109,7 +109,7 @@ Then you can go ahead and plug it back in, it'll take about a minute to boot and
 
 You can browse to the metanyx web interface at http://192.168.5.1
 
-![screenshot](doc/screenshot-setup.png)
+![screenshot](doc/screenshot_setup.png)
 
 ### 4) Check that you're properly configured
 Visit https://check.torproject.org/ to confirm that you are now surfing via Tor. Cowabunga!
