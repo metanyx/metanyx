@@ -1,10 +1,8 @@
 ---
 
-# Create space for project scripts in /opt
 - name: Create /opt/metanyx
   file: path=/opt/metanyx/bin state=directory owner=root group=root mode=0700
 
-# Install udev rules
 - name: udev | Copy udev rules
   copy: src=90-metanyx.rules dest=/etc/udev/rules.d/90-metanyx.rules owner=root group=root mode=0644
 - name: udev | remove previous rules
@@ -12,7 +10,6 @@
 - name: udev | link net-rules
   command: ln -s /dev/null /etc/udev/rules.d/70-persistent-net.rules
 
-# Set up networking
 - name: Install networking interfaces config
   template: 
     src: interfaces.j2 
@@ -35,7 +32,6 @@
 - name: Set up resolv.conf for DNS resolution
   template: src=resolv.j2 dest=/etc/resolv.conf owner=root group=root mode=0644
 
-# Packages required/useful for ansible use of apt
 - name: Ensure apt dependencies are installed
   apt:
     pkg: "{{ item }}"
@@ -44,11 +40,9 @@
     - python-apt
     - apt-transport-https
 
-# Update repository cache
 - name: Update apt cache
   apt: update_cache=yes
 
-# Remove unused packages
 - name: Remove unwanted applications
   apt:
     pkg: "{{ item }}"
@@ -64,7 +58,6 @@
     - wicd-gtk
     - python-wicd
 
-# System tools
 - name: Install useful system tools
   apt:
     pkg: "{{ item }}"
@@ -87,7 +80,6 @@
     - python-jinja2
     - python-six
 
-# Networking applications
 - name: Install networking applications
   apt:
     pkg: "{{ item}}"
@@ -99,7 +91,6 @@
     - usb-modeswitch
     - iw
 
-# Security tools
 - name: Install security related applications
   apt:
     pkg: "{{ item }}"
@@ -135,14 +126,14 @@
 - name: Copy hostapd default config
   copy: src=hostapd_default dest=/etc/default/hostapd owner=root group=root mode=0644
   notify: Restart hostapd
+- name: Set hostapd service state
+  service: name=hostapd enabled={{ ap_enable}}
 
-# Install tor
 - name: Install Tor
   apt: pkg=tor state=latest
 - name: Set up torrc configuration file
   template: src=torrc.j2 dest=/etc/tor/torrc owner=root group=root mode=0644
 
-# Set up iptables rules and service
 - name: Install iptables rules
   template: src=iptables.j2 dest=/root/iptables.sh owner=root group=root mode=0700
   notify: Load iptables rules
@@ -153,8 +144,16 @@
   service: name=netfilter-persistent enabled=yes
   ignore_errors: yes
 
-# Pull down project and ansible
+- name: Install rc.local
+  template: 
+    src: rc_local.j2 
+    dest: /etc/rc.local
+    owner: root
+    group: root
+    mode: 0755
+
 - name: Clone metanyx git repo
   git: repo=https://github.com/metanyx/metanyx.git dest=/opt/metanyx/src/ update=yes
+
 - name: Clone ansible for local installs
   git: repo=https://github.com/ansible/ansible recursive=yes dest=/opt/ansible
