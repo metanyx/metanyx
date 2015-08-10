@@ -168,65 +168,59 @@ sync
 sudo umount /mnt/
 
 
-## Debian rootfs
+rootfs() {
+  ## Debian rootfs
+  #Refer to http://olimex.wordpress.com/2014/07/21/how-to-create-bare-minimum-debian-wheezy-rootfs-from-scratch/
 
-#Refer to http://olimex.wordpress.com/2014/07/21/how-to-create-bare-minimum-debian-wheezy-rootfs-from-scratch/
+  #Install dependencies
+  sudo apt-get -y install qemu-user-static debootstrap binfmt-support
 
-#Install dependencies
+  mkdir rootfs
+  sudo debootstrap --arch=armhf --foreign jessie rootfs
+  sudo cp /usr/bin/qemu-arm-static rootfs/usr/bin/
+  sudo cp /etc/resolv.conf rootfs/etc
+  sudo chroot rootfs
 
-sudo apt-get install qemu-user-static debootstrap binfmt-support
+  export distro=jessie
+  export LANG=C
+  /debootstrap/debootstrap --second-stage
 
-#Make directory we will build the rootfs into
+  cat <<EOT > /etc/sources.list
+  deb http://http.debian.net/debian jessie main
+  deb-src http://http.debian.net/debian jessie main
 
-mkdir rootfs
+  deb http://http.debian.net/debian jessie-updates main
+  deb-src http://http.debian.net/debian jessie-updates main
 
-#Build the first step of the rootfs
+  deb http://security.debian.org/ jessie/updates main
+  deb-src http://security.debian.org/ jessie/updates main
+  EOT
 
-sudo debootstrap --arch=armhf --foreign jessie rootfs
+  apt-get update
+  apt-get install -y -f locales dialog openssh-server python wpasupplicant
 
+  # Set a password here
+  passwd
 
-sudo cp /usr/bin/qemu-arm-static rootfs/usr/bin/
-sudo cp /etc/resolv.conf rootfs/etc
+  cat <<EOT >> /etc/network/interfaces
+  auto eth0
+  allow-hotplug eth0
+  iface eth0 inet dhcp
+  EOT
 
-sudo chroot rootfs
+  echo 'debian' > /etc/hostname
+  echo 'sunxi_emac' >> /etc/modules
+  echo T0:2345:respawn:/sbin/getty -L ttyS0 115200 vt100 >> /etc/inittab
+  sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+  rm -f /var/cache/apt/archives/*
+  rm -rf lib/modules/*
+  mkdir lib/modules
+  rm -rf lib/firmware/
+  exit
 
-export distro=jessie
-export LANG=C
-
-/debootstrap/debootstrap --second-stage
-
-cat <<EOT > /etc/sources.list
-deb http://http.debian.net/debian jessie main
-deb-src http://http.debian.net/debian jessie main
-
-deb http://http.debian.net/debian jessie-updates main
-deb-src http://http.debian.net/debian jessie-updates main
-
-deb http://security.debian.org/ jessie/updates main
-deb-src http://security.debian.org/ jessie/updates main
-EOT
-
-apt-get update
-apt-get install -f locales dialog openssh-server python wpasupplicant
-
-passwd # Set a password here
-
-#cat <<EOT >> /etc/network/interfaces
-#auto eth0
-#allow-hotplug eth0
-#iface eth0 inet dhcp
-#EOT
-
-echo 'debian' > /etc/hostname
-echo 'sunxi_emac' >> rootfs/etc/modules
-echo T0:2345:respawn:/sbin/getty -L ttyS0 115200 vt100 >> /etc/inittab
-rm -rf lib/modules/*
-mkdir lib/modules
-rm -rf lib/firmware/
-exit
-
-sudo rm rootfs/etc/resolv.conf
-sudo rm rootfs/usr/bin/qemu-arm-static
+  sudo rm rootfs/etc/resolv.conf
+  sudo rm rootfs/usr/bin/qemu-arm-static
+}
 
 sudo mount /dev/sdX2 /mnt
 sudo cp -a rootfs/* /mnt/

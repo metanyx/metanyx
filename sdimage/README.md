@@ -264,15 +264,17 @@ apt-get install -f locales dialog openssh-server python wpasupplicant
 
 passwd # Set a password here
 
-#cat <<EOT >> /etc/network/interfaces
-#auto eth0
-#allow-hotplug eth0
-#iface eth0 inet dhcp
-#EOT
+cat <<EOT > /etc/network/interfaces
+auto eth0
+allow-hotplug eth0
+iface eth0 inet dhcp
+EOT
 
 echo 'debian' > /etc/hostname
 echo 'sunxi_emac' >> /etc/modules
 echo T0:2345:respawn:/sbin/getty -L ttyS0 115200 vt100 >> /etc/inittab
+sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+rm -f /var/cache/apt/archives/*
 rm -rf lib/modules/*
 mkdir lib/modules
 rm -rf lib/firmware/

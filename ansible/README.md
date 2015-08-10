@@ -23,7 +23,7 @@ cat > group_vars/torproxy << __CONF__
 target_hw: <olimex|beaglebone>
 wpa_ssid: <your-ssid-or-leave-this-here>
 wpa_psk: <your-psk-or-leave-this-here>
-ap_enabled: no
+ap_enable: no
 dns_servers: 
   - <dns_server_1>
   - <dns_server_2>
