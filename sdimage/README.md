@@ -146,6 +146,69 @@ http://lkml.org/lkml/2012/8/8/385
 
     cd ..
 
+
+## Debian rootfs
+
+Refer to http://olimex.wordpress.com/2014/07/21/how-to-create-bare-minimum-debian-wheezy-rootfs-from-scratch/
+
+Install dependencies
+
+    sudo apt-get install qemu-user-static debootstrap binfmt-support
+
+Make directory we will build the rootfs into
+
+    mkdir rootfs
+
+Build the first step of the rootfs
+
+    sudo debootstrap --arch=armhf --foreign jessie rootfs
+
+```
+sudo cp /usr/bin/qemu-arm-static rootfs/usr/bin/
+sudo cp /etc/resolv.conf rootfs/etc
+
+sudo chroot rootfs
+
+export distro=jessie
+export LANG=C
+
+/debootstrap/debootstrap --second-stage
+
+cat <<EOT > /etc/sources.list
+deb http://http.debian.net/debian jessie main
+deb-src http://http.debian.net/debian jessie main
+
+deb http://http.debian.net/debian jessie-updates main
+deb-src http://http.debian.net/debian jessie-updates main
+
+deb http://security.debian.org/ jessie/updates main
+deb-src http://security.debian.org/ jessie/updates main
+EOT
+
+apt-get update
+apt-get install -f locales dialog openssh-server python wpasupplicant
+
+passwd # Set a password here
+
+cat <<EOT > /etc/network/interfaces
+auto eth0
+allow-hotplug eth0
+iface eth0 inet dhcp
+EOT
+
+echo 'debian' > /etc/hostname
+echo 'sunxi_emac' >> /etc/modules
+echo T0:2345:respawn:/sbin/getty -L ttyS0 115200 vt100 >> /etc/inittab
+sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+rm -f /var/cache/apt/archives/*
+rm -rf lib/modules/*
+mkdir lib/modules
+rm -rf lib/firmware/
+exit
+
+sudo rm rootfs/etc/resolv.conf
+sudo rm rootfs/usr/bin/qemu-arm-static
+
 ## Partition and Format SD Card
 
 ### Partitioning
@@ -220,73 +283,14 @@ sudo cp $REPO/sdimage/src/script.bin /mnt/
 sync
 sudo umount /mnt/
 ```
-
-## Debian rootfs
-
-Refer to http://olimex.wordpress.com/2014/07/21/how-to-create-bare-minimum-debian-wheezy-rootfs-from-scratch/
-
-Install dependencies
-
-    sudo apt-get install qemu-user-static debootstrap binfmt-support
-
-Make directory we will build the rootfs into
-
-    mkdir rootfs
-
-Build the first step of the rootfs
-
-    sudo debootstrap --arch=armhf --foreign jessie rootfs
-
-```
-sudo cp /usr/bin/qemu-arm-static rootfs/usr/bin/
-sudo cp /etc/resolv.conf rootfs/etc
-
-sudo chroot rootfs
-
-export distro=jessie
-export LANG=C
-
-/debootstrap/debootstrap --second-stage
-
-cat <<EOT > /etc/sources.list
-deb http://http.debian.net/debian jessie main
-deb-src http://http.debian.net/debian jessie main
-
-deb http://http.debian.net/debian jessie-updates main
-deb-src http://http.debian.net/debian jessie-updates main
-
-deb http://security.debian.org/ jessie/updates main
-deb-src http://security.debian.org/ jessie/updates main
-EOT
-
-apt-get update
-apt-get install -f locales dialog openssh-server python wpasupplicant
-
-passwd # Set a password here
-
-cat <<EOT > /etc/network/interfaces
-auto eth0
-allow-hotplug eth0
-iface eth0 inet dhcp
-EOT
-
-echo 'debian' > /etc/hostname
-echo 'sunxi_emac' >> /etc/modules
-echo T0:2345:respawn:/sbin/getty -L ttyS0 115200 vt100 >> /etc/inittab
-sed -i 's/PermitRootLogin without-password/PermitRootLogin yes/' /etc/ssh/sshd_config
-rm -f /var/cache/apt/archives/*
-rm -rf lib/modules/*
-mkdir lib/modules
-rm -rf lib/firmware/
-exit
-
-sudo rm rootfs/etc/resolv.conf
-sudo rm rootfs/usr/bin/qemu-arm-static
+## Copy rootfs
 
 sudo mount /dev/sdX2 /mnt
 sudo cp -a rootfs/* /mnt/
 sudo cp -rfv linux-sunxi/out/lib/modules/3.4.103+ /mnt/lib/modules/
 sudo cp -rfv linux-sunxi/out/lib/firmware/ /mnt/lib/
+
+## Install extra firmware
 
 git clone http://git.kernel.org/pub/scm/linux/kernel/git/firmware/linux-firmware.git
 sudo cp -a linux-firmware/rtlwifi /mnt/lib/firmware/
@@ -298,7 +302,7 @@ sudo umount /mnt/
 
 You can make a backup of your sdcard with:
 
-    sudo dd if=/dev/sdX bs=512 count=2902016 of=out/olinuxino_debian8.raw
+    sudo dd if=/dev/sdX bs=512 count=2902016 of=out/olinuxino-LIME_debian8.img
 
 
 ## Eject SD image, insert into OlinuXino LIME board, and boot
